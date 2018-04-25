@@ -1,0 +1,68 @@
+//  Prefix.pch
+
+#ifndef Prefix_pch
+#define Prefix_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+
+// Library
+#import "Config.h"
+#import "YYCategories.h"    //工具类
+#import "BMShowHUD.h"       //显示toast
+#import "MySQLManager.h"    //数据库管理
+#import "UIButton+Extension.h"  //按钮扩展功能
+#import "IQKeyboardManager.h"   //键盘处理收缩
+#import "TopToast.h"
+#import "JSON.h"
+#import "DoAlertView.h"
+
+
+
+// Controllers & Models
+#import "AppController.h"
+#import "CommonUtils.h"
+#define appController [AppController sharedInstance]
+#define commonUtils [CommonUtils shared]
+
+
+// Pages
+#import "LoginVC.h"
+#import "SetPasswordVC.h"
+#import "LooseItemsAuditVC.h"
+#import "ManualAuditVC.h"
+#endif
+
+
+#ifndef weakify
+#if DEBUG
+#if __has_feature(objc_arc)
+#define weakify(object) autoreleasepool{} __weak __typeof__(object) weak##_##object = object;
+#else
+#define weakify(object) autoreleasepool{} __block __typeof__(object) block##_##object = object;
+#endif
+#else
+#if __has_feature(objc_arc)
+#define weakify(object) try{} @finally{} {} __weak __typeof__(object) weak##_##object = object;
+#else
+#define weakify(object) try{} @finally{} {} __block __typeof__(object) block##_##object = object;
+#endif
+#endif
+#endif
+
+#ifndef strongify
+#if DEBUG
+#if __has_feature(objc_arc)
+#define strongify(object) autoreleasepool{} __typeof__(object) object = weak##_##object;
+#else
+#define strongify(object) autoreleasepool{} __typeof__(object) object = block##_##object;
+#endif
+#else
+#if __has_feature(objc_arc)
+#define strongify(object) try{} @finally{} __typeof__(object) object = weak##_##object;
+#else
+#define strongify(object) try{} @finally{} __typeof__(object) object = block##_##object;
+#endif
+#endif
+#endif
