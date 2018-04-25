@@ -45,7 +45,7 @@
 #pragma mark - 公有方法
 
 //忘记密码-匹配账号和手机号码
-- (void)checkUserNameExist:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback {
+- (void)checkUserNameExist:(NSString *)userName callback:(Success)callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE user_name='%@';", TABLE_USERS, userName];
     
     [self queryFromUserTable:sql callback:^(NSArray<UserModel *> *list, NSString *errMsg) {
@@ -57,7 +57,7 @@
 
 }
 
-- (void )checkMobileExist:(NSString *)mobile userName:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback {
+- (void )checkMobileExist:(NSString *)mobile userName:(NSString *)userName callback:(Success)callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE user_name='%@' and mobile='%@'", TABLE_USERS, userName, mobile];
     [self queryFromUserTable:sql callback:^(NSArray<UserModel *> *list, NSString *errMsg) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -69,7 +69,7 @@
 
 
 //登录
-- (void)checkLoginWithUserName:(NSString *)userName pwd:(NSString *)pwd callback:(void(^)(BOOL success, NSString *errMsg))callback {
+- (void)checkLoginWithUserName:(NSString *)userName pwd:(NSString *)pwd callback:(Success)callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE user_name='%@' and user_pwd='%@'", TABLE_USERS, userName, pwd];
     [self queryFromUserTable:sql callback:^(NSArray<UserModel *> *list, NSString *errMsg) {
         
@@ -104,7 +104,7 @@
 }
 
 //重置密码-重置
-- (void)resetPassword:(NSString *)userName pwd:(NSString *)pwd callback:(void(^)(BOOL success, NSString *errMsg))callback {
+- (void)resetPassword:(NSString *)userName pwd:(NSString *)pwd callback:(Success)callback {
     NSString *sql = [NSString stringWithFormat:@"UPDATE %@ set user_pwd='%@' WHERE user_name='%@' ", TABLE_USERS, pwd, userName];
     [self updateFromUserTable:sql callback:^(BOOL success, NSString *errMsg) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -114,7 +114,7 @@
 }
 
 //检查标签是否已经存在
-- (void)checkLabelExist:(NSString *)labelId userName:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback {
+- (void)checkLabelExist:(NSString *)labelId userName:(NSString *)userName callback:(Success)callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user='%@' and label_code='%@'", TABLE_LABELS, userName, labelId];
     @weakify(self);
     [self query:sql callback:^(MYSQL_RES *result, NSString *errorMsg) {
@@ -141,7 +141,7 @@
 }
 
 //添加标签
-- (void)addLabel:(NSString *)labelId userName:(NSString *)userName desc:(NSString *)desc callback:(void(^)(BOOL success, NSString *errMsg))callback {
+- (void)addLabel:(NSString *)labelId userName:(NSString *)userName desc:(NSString *)desc callback:(Success)callback {
     if (userName == nil || labelId == nil) {
         dispatch_async(dispatch_get_main_queue(), ^{
             callback?callback(NO, @"用户名或标签码不能为空"):nil;
@@ -182,7 +182,7 @@
     }];
 }
 
-- (void)deleteLabel:(NSString *)labelId userName:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback {
+- (void)deleteLabel:(NSString *)labelId userName:(NSString *)userName callback:(Success)callback {
     NSString *sql = [NSString stringWithFormat:@"DELETE  from %@ WHERE label_user='%@' and label_code='%@' ;", TABLE_LABELS,userName, labelId];
     return [self delete:sql callback:^(BOOL success, NSString *errMsg) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -246,7 +246,7 @@
 
 
 //插入数据库
-- (void )insert:(NSDictionary *)param table:(NSString *)table callback:(void(^)(BOOL success, NSString *errMsg))callback
+- (void )insert:(NSDictionary *)param table:(NSString *)table callback:(Success)callback
 
 {
     
@@ -290,7 +290,7 @@
 }
 
 //删除
--(void)delete:(NSString *)sql callback:(void(^)(BOOL success, NSString *errMsg))callback{
+-(void)delete:(NSString *)sql callback:(Success)callback{
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         //执行查询语句
@@ -452,7 +452,7 @@
 
 
 //更新"table_users"表
-- (void )updateFromUserTable:(NSString *)sql callback:(void(^)(BOOL success, NSString *errMsg))callback{
+- (void )updateFromUserTable:(NSString *)sql callback:(Success)callback{
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         //执行查询语句

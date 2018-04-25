@@ -10,7 +10,7 @@
 #import "LabelModel.h"
 typedef void(^Callback)(BOOL success);
 
-
+typedef void(^Success)(BOOL success, NSString *errMsg);
 
 
 //数据库管理类
@@ -40,24 +40,24 @@ typedef void(^Callback)(BOOL success);
 
 
 //检查登录
-- (void)checkLoginWithUserName:(NSString *)userName pwd:(NSString *)pwd callback:(void(^)(BOOL success, NSString *errMsg))callback;
+- (void)checkLoginWithUserName:(NSString *)userName pwd:(NSString *)pwd callback:(Success)callback;
 //检查用户名对应的手机号码是否存在
-- (void )checkMobileExist:(NSString *)mobile userName:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback;
+- (void )checkMobileExist:(NSString *)mobile userName:(NSString *)userName callback:(Success)callback;
 //检查用户名是否存在
-- (void)checkUserNameExist:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback;
+- (void)checkUserNameExist:(NSString *)userName callback:(Success)callback;
 //获取短信验证码
 - (void)getVerificationCode:(NSString *)mobile callback:(void(^)(NSString *code, NSString *errMsg))callback;
 //重置密码
-- (void)resetPassword:(NSString *)userName pwd:(NSString *)pwd callback:(void(^)(BOOL success, NSString *errMsg))callback;
+- (void)resetPassword:(NSString *)userName pwd:(NSString *)pwd callback:(Success)callback;
 //添加标签
-- (void)addLabel:(NSString *)labelId userName:(NSString *)userName desc:(NSString *)desc callback:(void(^)(BOOL success, NSString *errMsg))callback;
+- (void)addLabel:(NSString *)labelId userName:(NSString *)userName desc:(NSString *)desc callback:(Success)callback;
 //检查标签是否已经存在
-- (void)checkLabelExist:(NSString *)labelId userName:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback;
+- (void)checkLabelExist:(NSString *)labelId userName:(NSString *)userName callback:(Success)callback;
 //查询所有的标签
 - (void)getAllLabels:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback;
 //搜索标签
 - (void)searchLabel:(NSString *)searchContent callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback;
 //删除标签
-- (void)deleteLabel:(NSString *)labelId userName:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback ;
+- (void)deleteLabel:(NSString *)labelId userName:(NSString *)userName callback:(Success)callback ;
 
 @end
