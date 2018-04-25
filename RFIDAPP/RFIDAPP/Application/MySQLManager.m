@@ -58,11 +58,13 @@
 }
 
 
-//登录-检查账号密码
+//登录
 - (void)checkLoginWithUserName:(NSString *)userName pwd:(NSString *)pwd callback:(Callback)callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE user_name='%@' and user_pwd='%@'", TABLE_USERS, userName, pwd];
-    NSArray *arr = [self queryFromUserTable:sql];
-    callback?callback(arr.count):nil;//非0即真，当arr.cout != 0 时即为YES
+    [self queryFromUserTable:sql callback:^(NSArray<UserModel *> *results) {
+            callback?callback(results.count):nil;//非0即真，当arr.cout != 0 时即为YES
+    }];
+
 }
 
 //重置密码-获取验证码
@@ -329,6 +331,35 @@
         }
     }
     return list;
+}
+
+
+- (void)queryFromUserTable:(NSString *)sql callback:(void(^)(NSArray<UserModel *> * results))callback {
+    
+    @weakify(self);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        @strongify(self);
+        MYSQL_RES *result = [self query:sql];
+        NSMutableArray *list = [NSMutableArray array];
+        if (result) {//有数据
+            //遍历每一行记录
+            MYSQL_ROW row;
+            while ((row = mysql_fetch_row(result))) {
+                UserModel *model = [[UserModel alloc] init];
+                //如果表中新增字段，那么这里的索引顺序应当改变
+                model.realName = [self decodeCString:row[1]];
+                model.mobile = [self decodeCString:row[2]];
+                model.userName = [self decodeCString:row[3]];
+                model.userPwd = [self decodeCString:row[4]];
+                model.schoolId = [self decodeCString:row[5]];
+                model.labelCode = [self decodeCString:row[6]];
+                [list addObject:model];
+            }
+        }
+        callback?callback(list):nil;
+    });
+
+
 }
 
 
