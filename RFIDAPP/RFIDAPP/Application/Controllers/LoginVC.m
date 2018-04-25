@@ -88,7 +88,8 @@
 - (IBAction)userLogin:(id)sender {
     
     [BMShowHUD show];
-    [[MySQLManager shareInstance] checkLoginWithUserName:self.usernameTextField.text pwd:self.passwordTextField.text callback:^(BOOL success) {
+
+    [[MySQLManager shareInstance] checkLoginWithUserName:self.usernameTextField.text pwd:self.passwordTextField.text callback:^(BOOL success, NSString *errMsg) {
 
         if (success) {
             dispatch_async(dispatch_get_main_queue(), ^ {

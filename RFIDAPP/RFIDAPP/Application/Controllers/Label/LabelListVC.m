@@ -9,7 +9,7 @@
 #import "LabelListVC.h"
 #import "LabelTableViewCell.h"
 #import "LabelModel.h"
-#import "LoginVC.h"
+#import "LoginNavigationController.h"
 @interface LabelListVC ()<UITabBarDelegate , UITableViewDataSource, UISearchBarDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *list; ///< 标签列表
@@ -19,7 +19,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.list = [[[MySQLManager shareInstance] getAllLabels] mutableCopy];
+   
+
     //取出多余的分割线
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     
@@ -28,8 +29,15 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     //每次界面出现都刷新数据
-    self.list = [[[MySQLManager shareInstance] getAllLabels] mutableCopy];
-    [self.tableView reloadData];
+    @weakify(self);
+    [[MySQLManager shareInstance] getAllLabels:^(NSArray<LabelModel *> *list, NSString *errMsg) {
+        @strongify(self);
+        self.list = [list mutableCopy];
+        //在主线程刷新
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    }] ;
 }
 
 #pragma mark - 设置UI
@@ -147,7 +155,7 @@
     
     UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     //获取Main.storyboard中的第2个视图
-    LoginVC *vc = [mainStory instantiateViewControllerWithIdentifier:@"LoginVC"];
+    LoginNavigationController *vc = [mainStory instantiateViewControllerWithIdentifier:@"LoginNavigationController"];
     [UIApplication sharedApplication].keyWindow.rootViewController = vc;
     [BMShowHUD showSuccess:@"登出成功"];
 }

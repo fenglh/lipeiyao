@@ -40,7 +40,7 @@ typedef void(^Callback)(BOOL success);
 
 
 //检查登录
-- (void)checkLoginWithUserName:(NSString *)userName pwd:(NSString *)pwd callback:(Callback)callback;
+- (void)checkLoginWithUserName:(NSString *)userName pwd:(NSString *)pwd callback:(void(^)(BOOL success, NSString *errMsg))callback;
 //检查用户名对应的手机号码是否存在
 - (BOOL )checkMobileExist:(NSString *)mobile userName:(NSString *)userName;
 //检查用户名是否存在
@@ -54,7 +54,7 @@ typedef void(^Callback)(BOOL success);
 //检查标签是否已经存在
 - (BOOL)checkLabelExist:(NSString *)labelId userName:(NSString *)userName;
 //查询所有的标签
-- (NSArray <LabelModel *> *)getAllLabels;
+- (void)getAllLabels:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback;
 //搜索标签
 - (NSArray <LabelModel *> *)searchLabel:(NSString *)searchContent ;
 //删除标签

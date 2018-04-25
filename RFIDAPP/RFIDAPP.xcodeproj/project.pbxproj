@@ -171,6 +171,7 @@
 		3640A0EA20909C5900C3032D /* icon_verify@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3640A0E820909C5900C3032D /* icon_verify@3x.png */; };
 		3640A0EE20909D9500C3032D /* RootNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3640A0ED20909D9500C3032D /* RootNavigationController.m */; };
 		3640A0F12090A03200C3032D /* AuthenticationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 3640A0F02090A03200C3032D /* AuthenticationVC.m */; };
+		3640A0F42090BC0E00C3032D /* LoginNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3640A0F32090BC0E00C3032D /* LoginNavigationController.m */; };
 		CA06727F208B0B9800AEAF56 /* bitstream.m in Sources */ = {isa = PBXBuildFile; fileRef = CA067270208B0B9800AEAF56 /* bitstream.m */; };
 		CA067280208B0B9800AEAF56 /* mask.m in Sources */ = {isa = PBXBuildFile; fileRef = CA067272208B0B9800AEAF56 /* mask.m */; };
 		CA067281208B0B9800AEAF56 /* QRCodeGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = CA067274208B0B9800AEAF56 /* QRCodeGenerator.m */; };
@@ -589,6 +590,8 @@
 		3640A0ED20909D9500C3032D /* RootNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RootNavigationController.m; sourceTree = "<group>"; };
 		3640A0EF2090A03200C3032D /* AuthenticationVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AuthenticationVC.h; sourceTree = "<group>"; };
 		3640A0F02090A03200C3032D /* AuthenticationVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AuthenticationVC.m; sourceTree = "<group>"; };
+		3640A0F22090BC0E00C3032D /* LoginNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginNavigationController.h; sourceTree = "<group>"; };
+		3640A0F32090BC0E00C3032D /* LoginNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginNavigationController.m; sourceTree = "<group>"; };
 		CA06726F208B0B9800AEAF56 /* bitstream.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = bitstream.h; sourceTree = "<group>"; };
 		CA067270208B0B9800AEAF56 /* bitstream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bitstream.m; sourceTree = "<group>"; };
 		CA067271208B0B9800AEAF56 /* mask.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = mask.h; sourceTree = "<group>"; };
@@ -1499,6 +1502,8 @@
 			children = (
 				3640A0EC20909D9500C3032D /* RootNavigationController.h */,
 				3640A0ED20909D9500C3032D /* RootNavigationController.m */,
+				3640A0F22090BC0E00C3032D /* LoginNavigationController.h */,
+				3640A0F32090BC0E00C3032D /* LoginNavigationController.m */,
 			);
 			name = Base;
 			sourceTree = "<group>";
@@ -1727,6 +1732,7 @@
 				3640A0962090332900C3032D /* PingFoundation.m in Sources */,
 				18D8E8D71CB5B86C00FDB06F /* DoAlertView.m in Sources */,
 				181853611CB24CD700145B5A /* ManualAuditVC.m in Sources */,
+				3640A0F42090BC0E00C3032D /* LoginNavigationController.m in Sources */,
 				18D8E8E51CB5B86C00FDB06F /* UIImage+ResizeMagick.m in Sources */,
 				18D8E8FA1CB5BE4A00FDB06F /* SBJsonWriter.m in Sources */,
 				36409F9D208F1B2700C3032D /* IQUIWindow+Hierarchy.m in Sources */,

@@ -45,46 +45,53 @@
 #pragma mark - 公有方法
 
 //忘记密码-匹配账号和手机号码
-- (BOOL )checkUserNameExist:(NSString *)userName  {
+- (void)checkUserNameExist:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE user_name='%@';", TABLE_USERS, userName];
-    NSArray *arr = [self queryFromUserTable:sql];
-    return arr.count;
+    [self queryFromUserTable:sql callback:^(NSArray<UserModel *> *list, NSString *errMsg) {
+        callback?callback(list.count, errMsg):nil;
+    }];
+
 }
 
-- (BOOL )checkMobileExist:(NSString *)mobile userName:(NSString *)userName  {
+- (void )checkMobileExist:(NSString *)mobile userName:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE user_name='%@' and mobile='%@'", TABLE_USERS, userName, mobile];
-    NSArray *arr = [self queryFromUserTable:sql];
-    return arr.count;
+    [self queryFromUserTable:sql callback:^(NSArray<UserModel *> *list, NSString *errMsg) {
+        callback?callback(list.count, errMsg):nil;
+    }];
 }
 
 
 //登录
-- (void)checkLoginWithUserName:(NSString *)userName pwd:(NSString *)pwd callback:(Callback)callback {
+- (void)checkLoginWithUserName:(NSString *)userName pwd:(NSString *)pwd callback:(void(^)(BOOL success, NSString *errMsg))callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE user_name='%@' and user_pwd='%@'", TABLE_USERS, userName, pwd];
-    [self queryFromUserTable:sql callback:^(NSArray<UserModel *> *results) {
-            callback?callback(results.count):nil;//非0即真，当arr.cout != 0 时即为YES
+    [self queryFromUserTable:sql callback:^(NSArray<UserModel *> *list, NSString *errMsg) {
+        callback?callback(list.count, errMsg):nil;//非0即真，当arr.cout != 0 时即为YES
     }];
 
 }
 
 //重置密码-获取验证码
-- (NSString *)getVerificationCode:(NSString *)mobile {
+- (void)getVerificationCode:(NSString *)mobile callback:(void(^)(NSString *code, NSString *errMsg))callback{
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE mobile='%@' ", TABLE_VERIFICATION_CODE, mobile];
-    NSArray *arr = [self queryFromVerificationCodeTable:sql];
-    NSString *code = nil;
-    if (arr.count) {
-        VerificationCodeModel *model = [arr firstObject];
-        code = model.code;
-        
-        [BMShowHUD showMessage:@"验证码已发送!"];
-        //模拟验证码发送，延时2秒
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            //因为没有接入短信系统，所以这里使用顶部提示来模拟接收到短信
-            [TopToast showToptoastWithText:[NSString stringWithFormat:@"获取到短信验证码:%@", code] duration:3.f ];
-        });
+    @weakify(self);
+    [self queryFromVerificationCodeTable:sql callback:^(NSArray<VerificationCodeModel *> *list, NSString *errMsg) {
+        @strongify(self);
+        NSString *code = nil;
+        if (list.count) {
+            VerificationCodeModel *model = [list firstObject];
+            code = model.code;
+            
+            [BMShowHUD showMessage:@"验证码已发送!"];
+            //模拟验证码发送，延时2秒
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                //因为没有接入短信系统，所以这里使用顶部提示来模拟接收到短信
+                [TopToast showToptoastWithText:[NSString stringWithFormat:@"获取到短信验证码:%@", code] duration:3.f ];
+            });
+            
+        }
+        callback?callback(code, errMsg):nil;//非0即真，当arr.cout != 0 时即为YES
+    }];
 
-    }
-    return code;
 }
 
 //重置密码-重置
@@ -95,21 +102,27 @@
 }
 
 //检查标签是否已经存在
-- (BOOL)checkLabelExist:(NSString *)labelId userName:(NSString *)userName {
+- (void)checkLabelExist:(NSString *)labelId userName:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback{
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user='%@' and label_code='%@'", TABLE_LABELS, userName, labelId];
-    MYSQL_RES *result = [self query:sql];
-    NSMutableArray *list = [NSMutableArray array];
-    //遍历每一行记录
-    MYSQL_ROW row;
-    while ((row = mysql_fetch_row(result))) {
-        LabelModel *model = [[LabelModel alloc] init];
-        //如果表中新增字段，那么这里的索引顺序应当改变
-        model.labelUser = [self decodeCString:row[1]];
-        model.labelId = [self decodeCString:row[2]];
-        model.LabelDesc = [self decodeCString:row[3]];
-        [list addObject:model];
-    }
-    return list.count;
+    @weakify(self);
+    [self query:sql callback:^(MYSQL_RES *result, NSString *errorMsg) {
+        @strongify(self);
+        NSMutableArray *list = [NSMutableArray array];
+        if (result) {
+            //遍历每一行记录
+            MYSQL_ROW row;
+            while ((row = mysql_fetch_row(result))) {
+                LabelModel *model = [[LabelModel alloc] init];
+                //如果表中新增字段，那么这里的索引顺序应当改变
+                model.labelUser = [self decodeCString:row[1]];
+                model.labelId = [self decodeCString:row[2]];
+                model.LabelDesc = [self decodeCString:row[3]];
+                [list addObject:model];
+            }
+        }
+        callback?callback(list.count, errorMsg):nil;//非0即真，当arr.cout != 0 时即为YES
+    }];
+
 }
 
 //添加标签
@@ -128,14 +141,18 @@
     return [self insert:param table:TABLE_LABELS];
 }
 
-- (NSArray <LabelModel *> *)getAllLabels {
+- (void)getAllLabels:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback{
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ ", TABLE_LABELS];
-    return [self queryFromLabelsTable:sql];
+    [self queryFromLabelsTable:sql callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
+        callback?callback(list, errMsg):nil;
+    }];
 }
 
-- (NSArray <LabelModel *> *)searchLabel:(NSString *)searchContent {
+- (void)searchLabel:(NSString *)searchContent callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback{
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user like '%%%@%%' or label_code like'%%%@%%' ;", TABLE_LABELS,searchContent, searchContent];
-    return [self queryFromLabelsTable:sql];
+    [self queryFromLabelsTable:sql callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
+        callback?callback(list, errMsg):nil;
+    }];
 }
 
 - (BOOL)deleteLabel:(NSString *)labelId userName:(NSString *)userName {
@@ -255,7 +272,7 @@
 }
 
 //查询sql
-- (MYSQL_RES *)query:(NSString *)sql {
+- (MYSQL_RES *)query22:(NSString *)sql {
     if (sql == nil) {
         return nil;
     }
@@ -270,76 +287,80 @@
     return result;
 }
 
+//查询sql-异步
+- (void)query:(NSString *)sql callback:(void(^)(MYSQL_RES *result, NSString *errorMsg))callback {
+
+    if (sql == nil) {
+        return ;
+    }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+
+        //执行查询语句
+        int status = mysql_query(self.sock, [sql UTF8String]);
+        MYSQL_RES *result = nil;
+        NSString *error;
+        if (status == 0) {
+            result = mysql_store_result(self.sock);
+        }else{
+            error=@"数据库查询失败";
+        }
+        callback?callback(result, error):nil;
+        
+    });
+    
+}
+
+
 
 
 //查询"table_vefication_code"表
-- (NSArray<VerificationCodeModel *> *)queryFromVerificationCodeTable:(NSString *)sql {
+- (void)queryFromVerificationCodeTable:(NSString *)sql callback:(void(^)(NSArray<VerificationCodeModel *> *list, NSString *errMsg))callback {
 
-    MYSQL_RES *result = [self query:sql];
-    NSMutableArray *list = [NSMutableArray array];
-    if (result) {//有数据
-        //遍历每一行记录
-        MYSQL_ROW row;
-        while ((row = mysql_fetch_row(result))) {
-            VerificationCodeModel *model = [[VerificationCodeModel alloc] init];
-            //如果表中新增字段，那么这里的索引顺序应当改变
-            model.mobile = [self decodeCString:row[1]];
-            model.code = [self decodeCString:row[2]];
-            [list addObject:model];
+    @weakify(self);
+    [self query:sql callback:^(MYSQL_RES *result, NSString *errorMsg) {
+        @strongify(self);
+        NSMutableArray *list = [NSMutableArray array];
+        if (result) {//有数据
+            //遍历每一行记录
+            MYSQL_ROW row;
+            while ((row = mysql_fetch_row(result))) {
+                VerificationCodeModel *model = [[VerificationCodeModel alloc] init];
+                //如果表中新增字段，那么这里的索引顺序应当改变
+                model.mobile = [self decodeCString:row[1]];
+                model.code = [self decodeCString:row[2]];
+                [list addObject:model];
+            }
         }
-    }
-    
-    return list;
+        callback?callback(list, errorMsg):nil;
+    }];
+
 }
 
 //查询"table_labels"表
-- (NSArray<LabelModel *> *)queryFromLabelsTable:(NSString *)sql {
-    MYSQL_RES *result = [self query:sql];
+- (void)queryFromLabelsTable:(NSString *)sql callback:(void(^)(NSArray<LabelModel *> *list, NSString *errMsg))callback {
+    [self query:sql callback:^(MYSQL_RES *result, NSString *errorMsg) {
+        NSMutableArray *list = [NSMutableArray array];
+        if (result) {
+            //遍历每一行记录
+            MYSQL_ROW row;
+            while ((row = mysql_fetch_row(result))) {
+                LabelModel *model = [[LabelModel alloc] init];
+                //如果表中新增字段，那么这里的索引顺序应当改变
+                model.labelUser = [self decodeCString:row[1]];
+                model.labelId = [self decodeCString:row[2]];
+                model.LabelDesc = [self decodeCString:row[3]];
+                [list addObject:model];
+            }
+        }
+        callback?callback(list, errorMsg):nil;
+    }];
 
-    NSMutableArray *list = [NSMutableArray array];
-    //遍历每一行记录
-    MYSQL_ROW row;
-    while ((row = mysql_fetch_row(result))) {
-        LabelModel *model = [[LabelModel alloc] init];
-        //如果表中新增字段，那么这里的索引顺序应当改变
-        model.labelUser = [self decodeCString:row[1]];
-        model.labelId = [self decodeCString:row[2]];
-        model.LabelDesc = [self decodeCString:row[3]];
-        [list addObject:model];
-    }
-    return list;
 }
 
 
 //查询"table_users"表
-- (NSArray<UserModel *> *)queryFromUserTable:(NSString *)sql {
-    MYSQL_RES *result = [self query:sql];
-    NSMutableArray *list = [NSMutableArray array];
-    if (result) {//有数据
-        //遍历每一行记录
-        MYSQL_ROW row;
-        while ((row = mysql_fetch_row(result))) {
-            UserModel *model = [[UserModel alloc] init];
-            //如果表中新增字段，那么这里的索引顺序应当改变
-            model.realName = [self decodeCString:row[1]];
-            model.mobile = [self decodeCString:row[2]];
-            model.userName = [self decodeCString:row[3]];
-            model.userPwd = [self decodeCString:row[4]];
-            model.schoolId = [self decodeCString:row[5]];
-            model.labelCode = [self decodeCString:row[6]];
-            [list addObject:model];
-        }
-    }
-    return list;
-}
-
-
-- (void)queryFromUserTable:(NSString *)sql callback:(void(^)(NSArray<UserModel *> * results))callback {
-    
-    @weakify(self);
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        @strongify(self);
-        MYSQL_RES *result = [self query:sql];
+- (void)queryFromUserTable:(NSString *)sql callback:(void(^)(NSArray<UserModel *> *list, NSString *errMsg))callback{
+    [self query:sql callback:^(MYSQL_RES *result, NSString *errorMsg) {
         NSMutableArray *list = [NSMutableArray array];
         if (result) {//有数据
             //遍历每一行记录
@@ -356,11 +377,38 @@
                 [list addObject:model];
             }
         }
-        callback?callback(list):nil;
-    });
-
-
+        callback?callback(list, errorMsg):nil;
+    }];
 }
+
+
+//- (void)queryFromUserTable:(NSString *)sql callback:(void(^)(NSArray<UserModel *> * results))callback {
+//
+//    @weakify(self);
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        @strongify(self);
+//        MYSQL_RES *result = [self query:sql];
+//        NSMutableArray *list = [NSMutableArray array];
+//        if (result) {//有数据
+//            //遍历每一行记录
+//            MYSQL_ROW row;
+//            while ((row = mysql_fetch_row(result))) {
+//                UserModel *model = [[UserModel alloc] init];
+//                //如果表中新增字段，那么这里的索引顺序应当改变
+//                model.realName = [self decodeCString:row[1]];
+//                model.mobile = [self decodeCString:row[2]];
+//                model.userName = [self decodeCString:row[3]];
+//                model.userPwd = [self decodeCString:row[4]];
+//                model.schoolId = [self decodeCString:row[5]];
+//                model.labelCode = [self decodeCString:row[6]];
+//                [list addObject:model];
+//            }
+//        }
+//        callback?callback(list):nil;
+//    });
+//
+//
+//}
 
 
 //更新"table_users"表
