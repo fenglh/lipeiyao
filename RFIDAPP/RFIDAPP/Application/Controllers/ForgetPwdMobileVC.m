@@ -14,6 +14,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *mobileTextField;
 @property (weak, nonatomic) IBOutlet UITextField *userNameTextField;
 
+
 @property (nonatomic, strong) NSString *verificationCode; ///< 验证码
 
 @end
@@ -100,37 +101,58 @@
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.view endEditing:YES];
 }
-//跳转前进行判断，return NO则不允许跳转
+
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender {
-    if ([identifier isEqualToString:@"goSetPwd"]) {
-        //判断用户名存在
-        BOOL existUserName =  [[MySQLManager shareInstance] checkUserNameExist:self.userNameTextField.text];
-        if (!existUserName) {
-            [BMShowHUD showMessage:@"用户名不存在"];
-            return NO;
-        }
-        //判断用户名对应的手机号存在
-        BOOL exist =  [[MySQLManager shareInstance] checkMobileExist:self.mobileTextField.text userName:self.userNameTextField.text];
-        if (!exist) {
-            [BMShowHUD showMessage:@"手机号码不正确"];
-            return NO;
-        }
-        //获取手机验证码
-        self.verificationCode = [[MySQLManager shareInstance] getVerificationCode:self.mobileTextField.text];
-    }
-    return YES;
+    //屏蔽自动跳转，手动执行[self performSegueWithIdentifier:@"SetPasswordVC" sender:self]; 进行跳转
+    return NO;
 }
 
-//传值
+//传参数
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"goSetPwd"]) {
-        SetPasswordVC *vc = segue.destinationViewController;
-        vc.userName = self.userNameTextField.text;
-        vc.mobile = self.mobileTextField.text;
-        vc.verificationCode = self.verificationCode;
-    }
+    SetPasswordVC *vc = segue.destinationViewController;
+    vc.userName = self.userNameTextField.text;
+    vc.mobile = self.mobileTextField.text;
+    vc.verificationCode = self.verificationCode;
 }
 
+
+- (IBAction)nextBtnOnClick:(id)sender {
+    [BMShowHUD show];
+    //判断用户名存在
+    @weakify(self);
+    [[MySQLManager shareInstance] checkUserNameExist:self.userNameTextField.text callback:^(BOOL success, NSString *errMsg) {
+        @strongify(self);
+        if (!success) {
+            if (errMsg) {
+                [BMShowHUD showMessage:errMsg];
+            }else {
+                [BMShowHUD showMessage:@"用户不存在"];
+            }
+            return ;
+        }
+        [[MySQLManager shareInstance] checkMobileExist:self.mobileTextField.text userName:self.userNameTextField.text callback:^(BOOL success, NSString *errMsg) {
+            @strongify(self);
+            if (!success) {
+                if (errMsg) {
+                    [BMShowHUD showMessage:errMsg];
+                }else {
+                    [BMShowHUD showMessage:@"手机号不正确"];
+                }
+                return ;
+            }
+            [[MySQLManager shareInstance] getVerificationCode:self.mobileTextField.text callback:^(NSString *code, NSString *errMsg) {
+                @strongify(self);
+                if (errMsg) {
+                    [BMShowHUD showMessage:errMsg];
+                }else {
+                    [BMShowHUD showMessage:@"验证码已发送"];
+                    self.verificationCode = code;
+                    [self performSegueWithIdentifier:@"SetPasswordVC" sender:self];
+                }
+            }];
+        }];
+    }];
+}
 
 
 #pragma mark - getters setters

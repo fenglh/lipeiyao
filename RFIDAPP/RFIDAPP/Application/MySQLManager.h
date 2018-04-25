@@ -42,22 +42,22 @@ typedef void(^Callback)(BOOL success);
 //检查登录
 - (void)checkLoginWithUserName:(NSString *)userName pwd:(NSString *)pwd callback:(void(^)(BOOL success, NSString *errMsg))callback;
 //检查用户名对应的手机号码是否存在
-- (BOOL )checkMobileExist:(NSString *)mobile userName:(NSString *)userName;
+- (void )checkMobileExist:(NSString *)mobile userName:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback;
 //检查用户名是否存在
-- (BOOL )checkUserNameExist:(NSString *)userName;
+- (void)checkUserNameExist:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback;
 //获取短信验证码
-- (NSString *)getVerificationCode:(NSString *)mobile;
+- (void)getVerificationCode:(NSString *)mobile callback:(void(^)(NSString *code, NSString *errMsg))callback;
 //重置密码
-- (BOOL)resetPassword:(NSString *)userName pwd:(NSString *)pwd;
+- (void)resetPassword:(NSString *)userName pwd:(NSString *)pwd callback:(void(^)(BOOL success, NSString *errMsg))callback;
 //添加标签
-- (BOOL)addLabel:(NSString *)labelId userName:(NSString *)userName desc:(NSString *)desc;
+- (void)addLabel:(NSString *)labelId userName:(NSString *)userName desc:(NSString *)desc callback:(void(^)(BOOL success, NSString *errMsg))callback;
 //检查标签是否已经存在
-- (BOOL)checkLabelExist:(NSString *)labelId userName:(NSString *)userName;
+- (void)checkLabelExist:(NSString *)labelId userName:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback;
 //查询所有的标签
 - (void)getAllLabels:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback;
 //搜索标签
-- (NSArray <LabelModel *> *)searchLabel:(NSString *)searchContent ;
+- (void)searchLabel:(NSString *)searchContent callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback;
 //删除标签
-- (BOOL)deleteLabel:(NSString *)labelId userName:(NSString *)userName ;
+- (void)deleteLabel:(NSString *)labelId userName:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback ;
 
 @end

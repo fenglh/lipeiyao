@@ -93,15 +93,22 @@ static unsigned int  countDown ;
         return;
     }
     //模拟服务器请求，延迟1秒处理
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        BOOL ok = [[MySQLManager shareInstance] resetPassword:self.userName pwd:self.passwordText.text];
-        if (ok) {
-            [BMShowHUD showSuccess:@"密码重置成功!"];
-            [self.navigationController popToRootViewControllerAnimated:YES];
-        }else{
-            [BMShowHUD showSuccess:@"密码重置失败"];
-        }
+    @weakify(self);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[MySQLManager shareInstance] resetPassword:self.userName pwd:self.passwordText.text callback:^(BOOL success, NSString *errMsg) {
+            @strongify(self);
+            if (success) {
+                [BMShowHUD showSuccess:@"密码重置成功!"];
+                [self.navigationController popToRootViewControllerAnimated:YES];
+            }else{
+                if (errMsg) {
+                    [BMShowHUD showMessage:errMsg];
+                } else {
+                    [BMShowHUD showSuccess:@"密码重置失败"];
+                }
+            }
+        }];
+
     });
     
 }
@@ -181,12 +188,19 @@ static unsigned int  countDown ;
 
 - (BOOL)getVerificationCode {
     self.verificationCode = nil;
-    NSString *code = [[MySQLManager shareInstance] getVerificationCode:self.mobile];
-    if (code == nil) {
-        [BMShowHUD showMessage:@"该手机号不存在验证码"];
-        return NO;
-    }
-    self.verificationCode = code;//保存一下，以便校验
+    @weakify(self);
+    [[MySQLManager shareInstance] getVerificationCode:self.mobile callback:^(NSString *code, NSString *errMsg) {
+        @strongify(self);
+        if (errMsg) {
+            [BMShowHUD showMessage:errMsg];
+        }else {
+            self.verificationCode = code;//保存一下，以便校验
+            [BMShowHUD showMessage:@"验证码已发送"];
+        }
+    }];
+
+    
+
     return YES;
 }
 

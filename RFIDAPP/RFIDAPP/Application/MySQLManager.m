@@ -47,8 +47,12 @@
 //忘记密码-匹配账号和手机号码
 - (void)checkUserNameExist:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE user_name='%@';", TABLE_USERS, userName];
+    
     [self queryFromUserTable:sql callback:^(NSArray<UserModel *> *list, NSString *errMsg) {
-        callback?callback(list.count, errMsg):nil;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            callback?callback(list.count, errMsg):nil;
+        });
+        
     }];
 
 }
@@ -56,7 +60,10 @@
 - (void )checkMobileExist:(NSString *)mobile userName:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE user_name='%@' and mobile='%@'", TABLE_USERS, userName, mobile];
     [self queryFromUserTable:sql callback:^(NSArray<UserModel *> *list, NSString *errMsg) {
-        callback?callback(list.count, errMsg):nil;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            callback?callback(list.count, errMsg):nil;
+        });
+        
     }];
 }
 
@@ -65,23 +72,22 @@
 - (void)checkLoginWithUserName:(NSString *)userName pwd:(NSString *)pwd callback:(void(^)(BOOL success, NSString *errMsg))callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE user_name='%@' and user_pwd='%@'", TABLE_USERS, userName, pwd];
     [self queryFromUserTable:sql callback:^(NSArray<UserModel *> *list, NSString *errMsg) {
-        callback?callback(list.count, errMsg):nil;//非0即真，当arr.cout != 0 时即为YES
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            callback?callback(list.count, errMsg):nil;//非0即真，当arr.cout != 0 时即为YES
+        });
     }];
 
 }
 
 //重置密码-获取验证码
-- (void)getVerificationCode:(NSString *)mobile callback:(void(^)(NSString *code, NSString *errMsg))callback{
+- (void)getVerificationCode:(NSString *)mobile callback:(void(^)(NSString *code, NSString *errMsg))callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE mobile='%@' ", TABLE_VERIFICATION_CODE, mobile];
-    @weakify(self);
     [self queryFromVerificationCodeTable:sql callback:^(NSArray<VerificationCodeModel *> *list, NSString *errMsg) {
-        @strongify(self);
         NSString *code = nil;
         if (list.count) {
             VerificationCodeModel *model = [list firstObject];
             code = model.code;
-            
-            [BMShowHUD showMessage:@"验证码已发送!"];
             //模拟验证码发送，延时2秒
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 //因为没有接入短信系统，所以这里使用顶部提示来模拟接收到短信
@@ -89,20 +95,26 @@
             });
             
         }
-        callback?callback(code, errMsg):nil;//非0即真，当arr.cout != 0 时即为YES
+        dispatch_async(dispatch_get_main_queue(), ^{
+            callback?callback(code, errMsg):nil;//非0即真，当arr.cout != 0 时即为YES
+        });
+        
     }];
 
 }
 
 //重置密码-重置
-- (BOOL)resetPassword:(NSString *)userName pwd:(NSString *)pwd {
+- (void)resetPassword:(NSString *)userName pwd:(NSString *)pwd callback:(void(^)(BOOL success, NSString *errMsg))callback {
     NSString *sql = [NSString stringWithFormat:@"UPDATE %@ set user_pwd='%@' WHERE user_name='%@' ", TABLE_USERS, pwd, userName];
-    BOOL success = [self updateFromUserTable:sql];
-    return success;
+    [self updateFromUserTable:sql callback:^(BOOL success, NSString *errMsg) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            callback?callback(success, errMsg):nil;//非0即真，当arr.cout != 0 时即为YES
+        });
+    }];
 }
 
 //检查标签是否已经存在
-- (void)checkLabelExist:(NSString *)labelId userName:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback{
+- (void)checkLabelExist:(NSString *)labelId userName:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user='%@' and label_code='%@'", TABLE_LABELS, userName, labelId];
     @weakify(self);
     [self query:sql callback:^(MYSQL_RES *result, NSString *errorMsg) {
@@ -120,15 +132,21 @@
                 [list addObject:model];
             }
         }
-        callback?callback(list.count, errorMsg):nil;//非0即真，当arr.cout != 0 时即为YES
+        dispatch_async(dispatch_get_main_queue(), ^{
+            callback?callback(!list.count, errorMsg):nil;//非0即真，当arr.cout != 0 时即为YES
+        });
+        
     }];
 
 }
 
 //添加标签
-- (BOOL)addLabel:(NSString *)labelId userName:(NSString *)userName desc:(NSString *)desc {
+- (void)addLabel:(NSString *)labelId userName:(NSString *)userName desc:(NSString *)desc callback:(void(^)(BOOL success, NSString *errMsg))callback {
     if (userName == nil || labelId == nil) {
-        return NO;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            callback?callback(NO, @"用户名或标签码不能为空"):nil;
+        });
+        return ;
     }
     if (desc == nil) {
         desc = @"";
@@ -138,26 +156,39 @@
     [param setObject:labelId forKey:@"label_code"];
     [param setObject:desc forKey:@"label_desc"];
     
-    return [self insert:param table:TABLE_LABELS];
+    [self insert:param table:TABLE_LABELS callback:^(BOOL success, NSString *errMsg) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            callback?callback(success, errMsg):nil;
+        });
+    }];
 }
 
 - (void)getAllLabels:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback{
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ ", TABLE_LABELS];
     [self queryFromLabelsTable:sql callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
-        callback?callback(list, errMsg):nil;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            callback?callback(list, errMsg):nil;
+        });
     }];
 }
 
-- (void)searchLabel:(NSString *)searchContent callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback{
+- (void)searchLabel:(NSString *)searchContent callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user like '%%%@%%' or label_code like'%%%@%%' ;", TABLE_LABELS,searchContent, searchContent];
     [self queryFromLabelsTable:sql callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
-        callback?callback(list, errMsg):nil;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            callback?callback(list, errMsg):nil;
+        });
     }];
 }
 
-- (BOOL)deleteLabel:(NSString *)labelId userName:(NSString *)userName {
+- (void)deleteLabel:(NSString *)labelId userName:(NSString *)userName callback:(void(^)(BOOL success, NSString *errMsg))callback {
     NSString *sql = [NSString stringWithFormat:@"DELETE  from %@ WHERE label_user='%@' and label_code='%@' ;", TABLE_LABELS,userName, labelId];
-    return [self delete:sql];
+    return [self delete:sql callback:^(BOOL success, NSString *errMsg) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            callback?callback(success, errMsg):nil;
+        });
+    }];
 }
 
 #pragma mark - 私有方法
@@ -215,60 +246,69 @@
 
 
 //插入数据库
-- (BOOL )insert:(NSDictionary *)param table:(NSString *)table;
+- (void )insert:(NSDictionary *)param table:(NSString *)table callback:(void(^)(BOOL success, NSString *errMsg))callback
 
 {
     
-    NSString *insertNames=@"";
-    NSString *insertValues=@"";
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        NSString *insertNames=@"";
+        NSString *insertValues=@"";
+        
+        NSArray *allKeys = [param allKeys];
+        for (NSString *key in allKeys) {
+            //拼接names ，例如：(`real_name`,`user_name`, `user_pwd`, `user_school_id`, `label_code`)
+            insertNames=[insertNames stringByAppendingString:[NSString stringWithFormat:@"`%@`,", key]];
+            //拼接valus，例如：('ff', '李三', '888888', '9999','hjk345678')
+            insertValues=[insertValues stringByAppendingString:[NSString stringWithFormat:@"'%@',", [param objectForKey:key]]];
+        }
+        
+        if (insertNames && insertValues) {
+            insertNames = [insertNames substringToIndex:insertNames.length - 1];//去掉最后的逗号","
+            insertValues = [insertValues substringToIndex:insertValues.length - 1];//去掉最后的逗号","
+        }
+        
+        //组装sql语句,例如：@"insert into table_users (`real_name`,`user_name`, `user_pwd`, `user_school_id`, `label_code`) values('ff', '李三', '888888', '9999','hjk345678');";
+        NSString *sql =[NSString stringWithFormat:@"insert into %@ (%@) values (%@);", table, insertNames, insertValues];
+        
+        
+        BOOL success = NO;
+        NSString *errMsg;
+        //执行查询语句
+        int status = mysql_query(self.sock, [sql UTF8String]);
+        if (status == 0) {
+            success = YES;
+        }else{
+            const char *error = mysql_error(self.sock);
+            errMsg =[self decodeCString:error];
+            success = NO;
+        }
+        callback?callback(success, errMsg):nil;
+    });
     
-    NSArray *allKeys = [param allKeys];
-    for (NSString *key in allKeys) {
-        //拼接names ，例如：(`real_name`,`user_name`, `user_pwd`, `user_school_id`, `label_code`)
-        insertNames=[insertNames stringByAppendingString:[NSString stringWithFormat:@"`%@`,", key]];
-        //拼接valus，例如：('ff', '李三', '888888', '9999','hjk345678')
-        insertValues=[insertValues stringByAppendingString:[NSString stringWithFormat:@"'%@',", [param objectForKey:key]]];
-    }
     
-    if (insertNames && insertValues) {
-        insertNames = [insertNames substringToIndex:insertNames.length - 1];//去掉最后的逗号","
-        insertValues = [insertValues substringToIndex:insertValues.length - 1];//去掉最后的逗号","
-    }
-    
-    //组装sql语句,例如：@"insert into table_users (`real_name`,`user_name`, `user_pwd`, `user_school_id`, `label_code`) values('ff', '李三', '888888', '9999','hjk345678');";
-    NSString *sql =[NSString stringWithFormat:@"insert into %@ (%@) values (%@);", table, insertNames, insertValues];
-    
-    
-    BOOL success = NO;
-    //执行查询语句
-    int status = mysql_query(self.sock, [sql UTF8String]);
-    if (status == 0) {
-        success = YES;
-    }else{
-        const char *error = mysql_error(self.sock);
-        NSString *errorString =[self decodeCString:error];
-        NSLog(@"插入失败:%@",errorString);
-        [BMShowHUD showMessage:errorString];
-        success = NO;
-    }
-    
-    return success;
 }
 
 //删除
--(BOOL)delete:(NSString *)sql{
-    if (sql == nil) {
-        return nil;
-    }
-
-    //执行查询语句
-    int status = mysql_query(self.sock, [sql UTF8String]);
+-(void)delete:(NSString *)sql callback:(void(^)(BOOL success, NSString *errMsg))callback{
     
-    BOOL success =NO;
-    if (status == 0) {
-        success = YES;
-    }
-    return success;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        //执行查询语句
+        int status = mysql_query(self.sock, [sql UTF8String]);
+        
+        BOOL success =NO;
+        NSString *errMsg;
+        if (status == 0) {
+            success = YES;
+        }else{
+            success = NO;
+            errMsg = @"删除数据失败";
+        }
+        callback?callback(success, errMsg):nil;
+        
+    });
+
+
 }
 
 //查询sql
@@ -302,7 +342,7 @@
         if (status == 0) {
             result = mysql_store_result(self.sock);
         }else{
-            error=@"数据库查询失败";
+            error=@"查询数据失败";
         }
         callback?callback(result, error):nil;
         
@@ -412,18 +452,22 @@
 
 
 //更新"table_users"表
-- (BOOL )updateFromUserTable:(NSString *)sql {
-    if (sql == nil) {
-        return nil;
-    }
+- (void )updateFromUserTable:(NSString *)sql callback:(void(^)(BOOL success, NSString *errMsg))callback{
 
-    //执行查询语句
-    int status = mysql_query(self.sock, [sql UTF8String]);
-    BOOL ok = NO;
-    if (status == 0) {
-        ok = YES;
-    }
-    return ok;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        //执行查询语句
+        int status = mysql_query(self.sock, [sql UTF8String]);
+        BOOL ok = NO;
+        NSString *errMsg;
+        if (status == 0) {
+            ok = YES;
+        }else{
+            errMsg = @"更新数据失败";
+            ok = NO;
+        }
+        callback?callback(ok, errMsg):nil;
+    });
+
 }
 
 

@@ -85,16 +85,24 @@
 //点击删除的实现。特别提醒：必须要先删除了数据，才能再执行删除的动画或者其他操作，不然会引起崩溃。
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     LabelModel *model = self.list[indexPath.row];
-    
+    @weakify(self);
     //删除远程数据
-    BOOL success = [[MySQLManager shareInstance] deleteLabel:model.labelId userName:model.labelUser];
-    if (success) {
-        //删除本地数据
-        [self.list removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowAtIndexPath:indexPath withRowAnimation:UITableViewRowAnimationTop];
-    }else{
-        [BMShowHUD showError:@"删除失败"];
-    }
+    [[MySQLManager shareInstance] deleteLabel:model.labelId userName:model.labelUser callback:^(BOOL success, NSString *errMsg) {
+        @strongify(self);
+        if (success) {
+            //删除本地数据
+            [self.list removeObjectAtIndex:indexPath.row];
+            [tableView deleteRowAtIndexPath:indexPath withRowAnimation:UITableViewRowAnimationTop];
+        }else{
+            if (errMsg) {
+                [BMShowHUD showError:errMsg];
+            } else {
+                [BMShowHUD showError:@"删除失败"];
+            }
+            
+        }
+    }];
+
 
 }
 
@@ -140,13 +148,19 @@
     searchBar.showsCancelButton = YES;
 }
 
+
 //搜索内容发生变化
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText 
 {
     NSString *inputStr = searchText;
-    [self.list removeAllObjects];
-    self.list = [[[MySQLManager shareInstance] searchLabel:inputStr] mutableCopy];
-    [self.tableView reloadData];
+    @weakify(self);
+    [[MySQLManager shareInstance] searchLabel:inputStr callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
+        @strongify(self);
+        [self.list removeAllObjects];
+        self.list = [list mutableCopy];
+        [self.tableView reloadData];
+    }] ;
+    
 }
 
 #pragma mark - 事件响应

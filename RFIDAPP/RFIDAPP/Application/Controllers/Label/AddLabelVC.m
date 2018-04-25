@@ -73,31 +73,50 @@
 
 - (IBAction)addBtnOnClick:(id)sender {
     //检查用户是否存在
-    BOOL haveUser = [[MySQLManager shareInstance] checkUserNameExist:self.labelUserTextField.text];
-    if (haveUser == NO) {
-        [BMShowHUD showMessage:@"用户不存在"];
-        [self.labelUserTextField becomeFirstResponder];
-        return ;
-    }
-    
-    //检查标签+用户名 是否重复录入
-    
-    BOOL exist = [[MySQLManager shareInstance] checkLabelExist:self.labelIdTextField.text userName:self.labelUserTextField.text];
-    if (exist) {
-        [BMShowHUD showMessage:@"该用户已经存在相同的标签!"];
-        [self.labelUserTextField becomeFirstResponder];
-        return ;
-    }
-    
-    //插入数据库
-    BOOL success = [[MySQLManager shareInstance] addLabel:self.labelIdTextField.text userName:self.labelUserTextField.text desc:self.labelDescTextField.text];
-    if (success) {
-         [BMShowHUD showSuccess:@"添加成功"];
-        [self.navigationController popViewControllerAnimated:YES];
-        //清空
-    }else{
-        [BMShowHUD showError:@"添加失败"];
-    }
+    @weakify(self);
+    [[MySQLManager shareInstance] checkUserNameExist:self.labelUserTextField.text callback:^(BOOL success, NSString *errMsg) {
+        @strongify(self);
+        if (!success) {
+            if (errMsg) {
+                [BMShowHUD showMessage:errMsg];
+            }else {
+                [BMShowHUD showMessage:@"用户不存在"];
+                [self.labelUserTextField becomeFirstResponder];
+            }
+            return ;
+        }
+        //检查标签+用户名 是否重复录入
+        [[MySQLManager shareInstance] checkLabelExist:self.labelIdTextField.text userName:self.labelUserTextField.text callback:^(BOOL success, NSString *errMsg) {
+            @strongify(self);
+            if (!success) {
+                if (errMsg) {
+                    [BMShowHUD showMessage:errMsg];
+                }else {
+                    [BMShowHUD showMessage:@"该用户已经存在相同的标签!"];
+                    [self.labelUserTextField becomeFirstResponder];
+                }
+                return ;
+            }
+            //插入数据库
+            [[MySQLManager shareInstance] addLabel:self.labelIdTextField.text userName:self.labelUserTextField.text desc:self.labelDescTextField.text callback:^(BOOL success, NSString *errMsg) {
+                if (success) {
+                    [BMShowHUD showSuccess:@"添加成功"];
+                    [self.navigationController popViewControllerAnimated:YES];
+                    //清空
+                }else{
+                    if (errMsg) {
+                        [BMShowHUD showError:errMsg];
+                    } else {
+                        [BMShowHUD showError:@"添加失败"];
+                    }
+                    
+                }
+            }];
+        }];
+        
+    }];
+
+
 }
 
 
