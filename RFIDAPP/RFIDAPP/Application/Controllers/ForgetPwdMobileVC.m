@@ -143,6 +143,7 @@
             if (!exist) {
                 [BMShowHUD showMessage:@"手机号不正确"];
                 [self.mobileTextField becomeFirstResponder];
+                
                 return ;
             }
             [[MySQLManager shareInstance] getVerificationCode:self.mobileTextField.text callback:^(NSString *code, NSString *errMsg) {

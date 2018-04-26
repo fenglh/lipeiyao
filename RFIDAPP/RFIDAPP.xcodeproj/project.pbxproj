@@ -168,6 +168,7 @@
 		3640A0F12090A03200C3032D /* AuthenticationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 3640A0F02090A03200C3032D /* AuthenticationVC.m */; };
 		3640A0F42090BC0E00C3032D /* LoginNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3640A0F32090BC0E00C3032D /* LoginNavigationController.m */; };
 		3640A0F7209168D600C3032D /* NSString+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3640A0F6209168D600C3032D /* NSString+Extension.m */; };
+		3640A0F92091B63300C3032D /* 李沛瑶.md in Resources */ = {isa = PBXBuildFile; fileRef = 3640A0F82091B63300C3032D /* 李沛瑶.md */; };
 		CA06727F208B0B9800AEAF56 /* bitstream.m in Sources */ = {isa = PBXBuildFile; fileRef = CA067270208B0B9800AEAF56 /* bitstream.m */; };
 		CA067280208B0B9800AEAF56 /* mask.m in Sources */ = {isa = PBXBuildFile; fileRef = CA067272208B0B9800AEAF56 /* mask.m */; };
 		CA067281208B0B9800AEAF56 /* QRCodeGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = CA067274208B0B9800AEAF56 /* QRCodeGenerator.m */; };
@@ -580,6 +581,7 @@
 		3640A0F32090BC0E00C3032D /* LoginNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginNavigationController.m; sourceTree = "<group>"; };
 		3640A0F5209168D600C3032D /* NSString+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+Extension.h"; sourceTree = "<group>"; };
 		3640A0F6209168D600C3032D /* NSString+Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+Extension.m"; sourceTree = "<group>"; };
+		3640A0F82091B63300C3032D /* 李沛瑶.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "李沛瑶.md"; sourceTree = "<group>"; };
 		CA06726F208B0B9800AEAF56 /* bitstream.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = bitstream.h; sourceTree = "<group>"; };
 		CA067270208B0B9800AEAF56 /* bitstream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bitstream.m; sourceTree = "<group>"; };
 		CA067271208B0B9800AEAF56 /* mask.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = mask.h; sourceTree = "<group>"; };
@@ -772,6 +774,7 @@
 		18E084671CAEAA3900D81434 = {
 			isa = PBXGroup;
 			children = (
+				3640A0F82091B63300C3032D /* 李沛瑶.md */,
 				18E084721CAEAA3900D81434 /* RFIDAPP */,
 				18E084711CAEAA3900D81434 /* Products */,
 				CA06726E208B0B9800AEAF56 /* libqrencode */,
@@ -1584,6 +1587,7 @@
 				18E084831CAEAA3900D81434 /* LaunchScreen.storyboard in Resources */,
 				36409EF1208EF9EA00C3032D /* icon_smile.png in Resources */,
 				36409F50208F1A3A00C3032D /* LICENSE in Resources */,
+				3640A0F92091B63300C3032D /* 李沛瑶.md in Resources */,
 				3640A0EA20909C5900C3032D /* icon_verify@3x.png in Resources */,
 				3640A053208F2E4600C3032D /* error2@3x.png in Resources */,
 				36409F0A208F169B00C3032D /* README.mdown in Resources */,

@@ -257,6 +257,7 @@
 - (void)connetctMySQL:(Callback)callback {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         self.sock = mysql_init(NULL);
+        //设置编码
         mysql_options(self.sock, MYSQL_SET_CHARSET_NAME, "utf8");
         MYSQL *connection = mysql_real_connect(self.sock, CONNECTION_HOST, CONNECTION_USER, CONNECTION_PASS, CONNECTION_DB, 3306, NULL, 0);
         if (connection) {
