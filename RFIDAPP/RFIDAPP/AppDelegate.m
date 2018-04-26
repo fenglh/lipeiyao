@@ -10,6 +10,8 @@
 #import "MySQLManager.h"
 #import "RealReachability.h"
 #import "TopToast.h"
+#import <rc4/rc4.h>
+
 @interface AppDelegate ()
 
 @end
@@ -25,6 +27,13 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(netWorkChange:) name:kRealReachabilityChangedNotification object:nil];
     // 在应用程序启动后进行自定义的覆盖点.
     [[MySQLManager shareInstance] connetctMySQL];
+    
+    //测试rc4加密
+    NSString *str = @"testStr";
+    
+    NSString *encodeStr = [rc4 encode:str andSecretKey:@"888888"];
+    
+    NSLog(@"加密字符串: %@",encodeStr);
     return YES;
 }
 

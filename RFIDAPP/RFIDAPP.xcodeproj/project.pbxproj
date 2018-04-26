@@ -185,6 +185,7 @@
 		CA752BA32089FE9800638D31 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA752BA22089FE9800638D31 /* CoreMedia.framework */; };
 		CA752BA52089FEA700638D31 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA752BA42089FEA700638D31 /* AVFoundation.framework */; };
 		CA752BD6208A070E00638D31 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CA752BD5208A070E00638D31 /* libiconv.dylib */; };
+		DB47F5CA2090E94D0062D268 /* rc4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB47F5C92090E94D0062D268 /* rc4.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -613,6 +614,7 @@
 		CA752BA22089FE9800638D31 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		CA752BA42089FEA700638D31 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		CA752BD5208A070E00638D31 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = ../../../../../usr/lib/libiconv.dylib; sourceTree = "<group>"; };
+		DB47F5C92090E94D0062D268 /* rc4.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = rc4.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -628,6 +630,7 @@
 				CA752BA12089FE8900638D31 /* CoreVideo.framework in Frameworks */,
 				CA752B9F2089FE6800638D31 /* QuartzCore.framework in Frameworks */,
 				18E0848D1CAEAD9A00D81434 /* CoreBluetooth.framework in Frameworks */,
+				DB47F5CA2090E94D0062D268 /* rc4.framework in Frameworks */,
 				18E0848B1CAEAD8E00D81434 /* ExternalAccessory.framework in Frameworks */,
 				18E084941CAEAF0700D81434 /* libsymbolbt-sdk.a in Frameworks */,
 			);
@@ -1327,6 +1330,7 @@
 		3640A055208F305900C3032D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DB47F5C92090E94D0062D268 /* rc4.framework */,
 				3640A058208F30BD00C3032D /* libc++.tbd */,
 			);
 			name = Frameworks;
@@ -1884,6 +1888,10 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = NK94TM64KF;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PREFIX_HEADER = "$(SRCROOT)/RFIDAPP/Application/Config/Prefix.pch";
 				INFOPLIST_FILE = RFIDAPP/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1914,6 +1922,10 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = NK94TM64KF;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PREFIX_HEADER = "$(SRCROOT)/RFIDAPP/Application/Config/Prefix.pch";
 				INFOPLIST_FILE = RFIDAPP/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
