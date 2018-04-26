@@ -176,7 +176,7 @@
     }];
 }
 
-//因为标签码加密了，所以无法模糊配配置
+
 - (void)searchLabel:(NSString *)searchContent callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback {
     [self getAllLabels:^(NSArray<LabelModel *> *list, NSString *errMsg) {
         NSMutableArray *searchResults = [NSMutableArray arrayWithCapacity:list.count];
@@ -191,6 +191,7 @@
             callback?callback(searchResults, errMsg):nil;
         });
     }];
+//因为标签码加密了，所以无法模糊配配置
 //    NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user like '%%%@%%' or label_code like'%%%@%%' ;", TABLE_LABELS,searchContent, searchContent];//
 //    [self queryFromLabelsTable:sql callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
 //        dispatch_async(dispatch_get_main_queue(), ^{
