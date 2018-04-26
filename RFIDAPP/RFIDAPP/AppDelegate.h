@@ -8,13 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@class ManualAuditVC;
+
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
-@property (strong, nonatomic) ManualAuditVC *ManualAuditVC;
+@property (nonatomic, strong) NSString *currentUserName; ///< 当前登录用户的用户名
 
 @end
 

@@ -2,7 +2,7 @@
 //  UserModel.h
 //  RFIDAPP
 //
-//  Created by fenglh on 2018/4/24.
+//  Created by lipeiyao on 2018/4/24.
 //  Copyright © 2018年 Apple Developer. All rights reserved.
 //
 
@@ -14,5 +14,5 @@
 @property (nonatomic, strong) NSString *userName;   ///< 登录账号
 @property (nonatomic, strong) NSString *userPwd;    ///< 登录密码
 @property (nonatomic, strong) NSString *schoolId;   ///< 学号
-@property (nonatomic, strong) NSString *labelCode;    ///< 标签码
+
 @end

@@ -24,8 +24,7 @@
     GLobalRealReachability.hostForPing = @"www.baidu.com";//其他域名，会导致返回两次网络状态，最后一次为不可达！
     [GLobalRealReachability startNotifier];//网络监测
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(netWorkChange:) name:kRealReachabilityChangedNotification object:nil];
-    // 在应用程序启动后进行自定义的覆盖点.
-    [[MySQLManager shareInstance] connetctMySQL];
+
     
     //测试rc4加密
     NSString *str = @"88888888";

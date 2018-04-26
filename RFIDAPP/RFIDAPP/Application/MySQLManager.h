@@ -2,7 +2,7 @@
 //  MySQLManager.h
 //  RFIDAPP
 //
-//  Created by fenglh on 2018/4/24.
+//  Created by lipeiyao on 2018/4/24.
 //  Copyright © 2018年 Apple Developer. All rights reserved.
 //
 
@@ -12,7 +12,7 @@ typedef void(^Callback)(BOOL success);
 
 typedef void(^Success)(BOOL success, NSString *errMsg);
 typedef void(^Result)(BOOL exist, NSString *errMsg);
-
+typedef void(^ResultList)(NSArray<LabelModel *> *list, NSString *errMsg);
 //数据库管理类
 @interface MySQLManager : NSObject
 
@@ -65,7 +65,7 @@ typedef void(^Result)(BOOL exist, NSString *errMsg);
 - (void)deleteLabel:(NSString *)labelId userName:(NSString *)userName callback:(Success)callback ;
 
 //认证标签
-- (void)authLabel:(NSString *)labelId userName:(NSString *)userName callback:(Success)callback ;
+- (void)authLabel:(NSString *)labelId userName:(NSString *)userName callback:(ResultList)callback ;
 
 
 @end

@@ -2,7 +2,7 @@
 //  LabelListVC.m
 //  RFIDAPP
 //
-//  Created by fenglh on 2018/4/25.
+//  Created by lipeiyao on 2018/4/25.
 //  Copyright © 2018年 Apple Developer. All rights reserved.
 //
 
@@ -10,6 +10,7 @@
 #import "LabelTableViewCell.h"
 #import "LabelModel.h"
 #import "LoginNavigationController.h"
+#import "AppDelegate.h"
 @interface LabelListVC ()<UITabBarDelegate , UITableViewDataSource, UISearchBarDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *list; ///< 标签列表
@@ -172,6 +173,10 @@
     LoginNavigationController *vc = [mainStory instantiateViewControllerWithIdentifier:@"LoginNavigationController"];
     [UIApplication sharedApplication].keyWindow.rootViewController = vc;
     [BMShowHUD showSuccess:@"登出成功"];
+    
+    //清空当前登录的用户名
+    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    delegate.currentUserName = nil;
 }
 
 

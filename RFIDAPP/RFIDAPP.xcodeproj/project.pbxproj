@@ -8,11 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1818531F1CAF6DFE00145B5A /* SetPasswordVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1818531E1CAF6DFE00145B5A /* SetPasswordVC.m */; };
-		1818533A1CAFCB6500145B5A /* Audit.m in Sources */ = {isa = PBXBuildFile; fileRef = 181853391CAFCB6500145B5A /* Audit.m */; };
-		181853611CB24CD700145B5A /* ManualAuditVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 181853601CB24CD700145B5A /* ManualAuditVC.m */; };
-		1825AA7E1CB2E84300F3ED73 /* FeSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 1825AA7D1CB2E84300F3ED73 /* FeSet.m */; };
-		1825AA811CB301AC00F3ED73 /* LooseItemsAuditVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1825AA801CB301AC00F3ED73 /* LooseItemsAuditVC.m */; };
-		1825AA841CB3B28D00F3ED73 /* LooseItemObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 1825AA831CB3B28D00F3ED73 /* LooseItemObject.m */; };
 		18D8E8BD1CB5440300FDB06F /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D8E8BC1CB5440300FDB06F /* AppController.m */; };
 		18D8E8D71CB5B86C00FDB06F /* DoAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D8E8C11CB5B86C00FDB06F /* DoAlertView.m */; };
 		18D8E8E21CB5B86C00FDB06F /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 18D8E8CE1CB5B86C00FDB06F /* .gitignore */; };
@@ -191,16 +186,6 @@
 /* Begin PBXFileReference section */
 		1818531D1CAF6DFE00145B5A /* SetPasswordVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetPasswordVC.h; sourceTree = "<group>"; };
 		1818531E1CAF6DFE00145B5A /* SetPasswordVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetPasswordVC.m; sourceTree = "<group>"; };
-		181853381CAFCB6500145B5A /* Audit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Audit.h; sourceTree = "<group>"; };
-		181853391CAFCB6500145B5A /* Audit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Audit.m; sourceTree = "<group>"; };
-		1818535F1CB24CD700145B5A /* ManualAuditVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManualAuditVC.h; sourceTree = "<group>"; };
-		181853601CB24CD700145B5A /* ManualAuditVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManualAuditVC.m; sourceTree = "<group>"; };
-		1825AA7C1CB2E84300F3ED73 /* FeSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeSet.h; sourceTree = "<group>"; };
-		1825AA7D1CB2E84300F3ED73 /* FeSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeSet.m; sourceTree = "<group>"; };
-		1825AA7F1CB301AC00F3ED73 /* LooseItemsAuditVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LooseItemsAuditVC.h; sourceTree = "<group>"; };
-		1825AA801CB301AC00F3ED73 /* LooseItemsAuditVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LooseItemsAuditVC.m; sourceTree = "<group>"; };
-		1825AA821CB3B28D00F3ED73 /* LooseItemObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LooseItemObject.h; sourceTree = "<group>"; };
-		1825AA831CB3B28D00F3ED73 /* LooseItemObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LooseItemObject.m; sourceTree = "<group>"; };
 		18D8E8BB1CB5440300FDB06F /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
 		18D8E8BC1CB5440300FDB06F /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppController.m; sourceTree = "<group>"; };
 		18D8E8C01CB5B86C00FDB06F /* DoAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DoAlertView.h; sourceTree = "<group>"; };
@@ -648,19 +633,6 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
-		181853361CAFCB4800145B5A /* Objects */ = {
-			isa = PBXGroup;
-			children = (
-				181853381CAFCB6500145B5A /* Audit.h */,
-				181853391CAFCB6500145B5A /* Audit.m */,
-				1825AA7C1CB2E84300F3ED73 /* FeSet.h */,
-				1825AA7D1CB2E84300F3ED73 /* FeSet.m */,
-				1825AA821CB3B28D00F3ED73 /* LooseItemObject.h */,
-				1825AA831CB3B28D00F3ED73 /* LooseItemObject.m */,
-			);
-			path = Objects;
-			sourceTree = "<group>";
-		};
 		18D8E8BA1CB5440300FDB06F /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -873,7 +845,6 @@
 			isa = PBXGroup;
 			children = (
 				181853331CAFCB4800145B5A /* Cells */,
-				181853361CAFCB4800145B5A /* Objects */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1419,10 +1390,6 @@
 				18E2145E1CAEE31B005CBCF0 /* LoginVC.m */,
 				1818531D1CAF6DFE00145B5A /* SetPasswordVC.h */,
 				1818531E1CAF6DFE00145B5A /* SetPasswordVC.m */,
-				1818535F1CB24CD700145B5A /* ManualAuditVC.h */,
-				181853601CB24CD700145B5A /* ManualAuditVC.m */,
-				1825AA7F1CB301AC00F3ED73 /* LooseItemsAuditVC.h */,
-				1825AA801CB301AC00F3ED73 /* LooseItemsAuditVC.m */,
 				36409EF4208F047400C3032D /* ForgetPwdMobileVC.h */,
 				36409EF5208F047400C3032D /* ForgetPwdMobileVC.m */,
 			);
@@ -1672,7 +1639,6 @@
 				18D8E8BD1CB5440300FDB06F /* AppController.m in Sources */,
 				36409F58208F1A3A00C3032D /* NSNotificationCenter+YYAdd.m in Sources */,
 				36409FA5208F1B2700C3032D /* IQUIView+IQKeyboardToolbar.m in Sources */,
-				1818533A1CAFCB6500145B5A /* Audit.m in Sources */,
 				3640A08D2090332900C3032D /* LocalConnection.m in Sources */,
 				36409F99208F1B2700C3032D /* IQUIScrollView+Additions.m in Sources */,
 				3640A06A20901B7700C3032D /* TopToast.m in Sources */,
@@ -1695,7 +1661,6 @@
 				3640A0F12090A03200C3032D /* AuthenticationVC.m in Sources */,
 				36409F61208F1A3A00C3032D /* YYCGUtilities.m in Sources */,
 				36409F67208F1A3A00C3032D /* UIDevice+YYAdd.m in Sources */,
-				1825AA841CB3B28D00F3ED73 /* LooseItemObject.m in Sources */,
 				3640A0CC20905CF600C3032D /* UIImage+BMScan.m in Sources */,
 				36409F60208F1A3A00C3032D /* CALayer+YYAdd.m in Sources */,
 				36409F6F208F1A3A00C3032D /* UIView+YYAdd.m in Sources */,
@@ -1711,10 +1676,8 @@
 				3640A0942090332900C3032D /* ReachStateWIFI.m in Sources */,
 				36409F65208F1A3A00C3032D /* UIColor+YYAdd.m in Sources */,
 				3640A0E22090787600C3032D /* LabelTableViewCell.m in Sources */,
-				1825AA7E1CB2E84300F3ED73 /* FeSet.m in Sources */,
 				3640A047208F2CED00C3032D /* MySQLManager.m in Sources */,
 				36409F5B208F1A3A00C3032D /* NSObject+YYAddForARC.m in Sources */,
-				1825AA811CB301AC00F3ED73 /* LooseItemsAuditVC.m in Sources */,
 				18E084751CAEAA3900D81434 /* main.m in Sources */,
 				36409FA4208F1B2700C3032D /* IQToolbar.m in Sources */,
 				36409F62208F1A3A00C3032D /* UIApplication+YYAdd.m in Sources */,
@@ -1737,7 +1700,6 @@
 				CA067283208B0B9800AEAF56 /* qrinput.m in Sources */,
 				3640A0962090332900C3032D /* PingFoundation.m in Sources */,
 				18D8E8D71CB5B86C00FDB06F /* DoAlertView.m in Sources */,
-				181853611CB24CD700145B5A /* ManualAuditVC.m in Sources */,
 				3640A0F42090BC0E00C3032D /* LoginNavigationController.m in Sources */,
 				18D8E8E51CB5B86C00FDB06F /* UIImage+ResizeMagick.m in Sources */,
 				18D8E8FA1CB5BE4A00FDB06F /* SBJsonWriter.m in Sources */,

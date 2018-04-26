@@ -10,7 +10,7 @@
 #import "MySQLManager.h"
 #import "ForgetPwdMobileVC.h"
 #import "RootNavigationController.h"
-
+#import "AppDelegate.h"
 @interface LoginVC ()
 
 
@@ -89,10 +89,12 @@
     
     [BMShowHUD show];
 
+    @weakify(self);;
     [[MySQLManager shareInstance] loginWithUserName:self.usernameTextField.text pwd:self.passwordTextField.text callback:^(BOOL success, NSString *errMsg) {
+        @strongify(self);
         if (success) {
             dispatch_async(dispatch_get_main_queue(), ^ {
-                
+                @strongify(self);
                 //获取Main.storyboard
                 UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
                 //获取Main.storyboard中的第2个视图
@@ -100,11 +102,16 @@
                 //切换跟控制器
                 [UIApplication sharedApplication].keyWindow.rootViewController = vc;
                 [BMShowHUD showSuccess:@"登录成功"];
+                //保存当前登录的用户名
+                AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+                delegate.currentUserName = self.usernameTextField.text;
             });
         }else{
-            dispatch_async(dispatch_get_main_queue(), ^ {
+            if (errMsg) {
+                [BMShowHUD showMessage:errMsg];
+            }else{
                 [BMShowHUD showMessage:@"账号或者密码错误"];
-            });
+            }
 
         }
     }];

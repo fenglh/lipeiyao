@@ -2,7 +2,7 @@
 //  MySQLManager.m
 //  RFIDAPP
 //
-//  Created by fenglh on 2018/4/24.
+//  Created by lipeiyao on 2018/4/24.
 //  Copyright © 2018年 Apple Developer. All rights reserved.
 //
 
@@ -20,6 +20,8 @@
 #define TABLE_LABELS                    @"table_labels"             //表名
 #define RC4_SECRET_KEY                  @"lipeiyao"                 //rc4 秘钥
 
+
+#define SQL_CONNECT_ERROR @"数据库连接失败!"
 
 @interface MySQLManager ()
 @property (nonatomic) MYSQL *sock;    //连接远程数据库
@@ -175,7 +177,8 @@
 }
 
 - (void)searchLabel:(NSString *)searchContent callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback {
-    NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user like '%%%@%%' or label_code like'%%%@%%' ;", TABLE_LABELS,searchContent, [self rc4Encode:searchContent]];//rc4 解密
+    //这里需要优化，加密不能模糊匹配
+    NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user like '%%%@%%' or label_code like'%%%@%%' ;", TABLE_LABELS,searchContent, searchContent];//
     [self queryFromLabelsTable:sql callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
         dispatch_async(dispatch_get_main_queue(), ^{
             callback?callback(list, errMsg):nil;
@@ -192,6 +195,14 @@
     }];
 }
 
+- (void)authLabel:(NSString *)labelId userName:(NSString *)userName callback:(ResultList)callback {
+    NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user='%@' and label_code='%@' ;", TABLE_LABELS,userName, [self rc4Encode:labelId]];
+    [self queryFromLabelsTable:sql callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            callback?callback(list, errMsg):nil;
+        });
+    }];
+}
 #pragma mark - 私有方法
 
 //rc4 加密
@@ -266,39 +277,47 @@
 {
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self connetctMySQL:^(BOOL success) {
+            if (success) {
+                NSString *insertNames=@"";
+                NSString *insertValues=@"";
+                
+                NSArray *allKeys = [param allKeys];
+                for (NSString *key in allKeys) {
+                    //拼接names ，例如：(`real_name`,`user_name`, `user_pwd`, `user_school_id`, `label_code`)
+                    insertNames=[insertNames stringByAppendingString:[NSString stringWithFormat:@"`%@`,", key]];
+                    //拼接valus，例如：('ff', '李三', '888888', '9999','hjk345678')
+                    insertValues=[insertValues stringByAppendingString:[NSString stringWithFormat:@"'%@',", [param objectForKey:key]]];
+                }
+                
+                if (insertNames && insertValues) {
+                    insertNames = [insertNames substringToIndex:insertNames.length - 1];//去掉最后的逗号","
+                    insertValues = [insertValues substringToIndex:insertValues.length - 1];//去掉最后的逗号","
+                }
+                
+                //组装sql语句,例如：@"insert into table_users (`real_name`,`user_name`, `user_pwd`, `user_school_id`, `label_code`) values('ff', '李三', '888888', '9999','hjk345678');";
+                NSString *sql =[NSString stringWithFormat:@"insert into %@ (%@) values (%@);", table, insertNames, insertValues];
+                
+                
+                BOOL success = NO;
+                NSString *errMsg;
+                
+                //执行查询语句
+                int status = mysql_query(self.sock, [sql UTF8String]);
+                if (status == 0) {
+                    success = YES;
+                }else{
+                    const char *error = mysql_error(self.sock);
+                    errMsg =[self decodeCString:error];
+                    success = NO;
+                }
+                callback?callback(success, errMsg):nil;
+            }else{
+                callback?callback(NO, SQL_CONNECT_ERROR):nil;
+            }
+        }];
         
-        NSString *insertNames=@"";
-        NSString *insertValues=@"";
-        
-        NSArray *allKeys = [param allKeys];
-        for (NSString *key in allKeys) {
-            //拼接names ，例如：(`real_name`,`user_name`, `user_pwd`, `user_school_id`, `label_code`)
-            insertNames=[insertNames stringByAppendingString:[NSString stringWithFormat:@"`%@`,", key]];
-            //拼接valus，例如：('ff', '李三', '888888', '9999','hjk345678')
-            insertValues=[insertValues stringByAppendingString:[NSString stringWithFormat:@"'%@',", [param objectForKey:key]]];
-        }
-        
-        if (insertNames && insertValues) {
-            insertNames = [insertNames substringToIndex:insertNames.length - 1];//去掉最后的逗号","
-            insertValues = [insertValues substringToIndex:insertValues.length - 1];//去掉最后的逗号","
-        }
-        
-        //组装sql语句,例如：@"insert into table_users (`real_name`,`user_name`, `user_pwd`, `user_school_id`, `label_code`) values('ff', '李三', '888888', '9999','hjk345678');";
-        NSString *sql =[NSString stringWithFormat:@"insert into %@ (%@) values (%@);", table, insertNames, insertValues];
-        
-        
-        BOOL success = NO;
-        NSString *errMsg;
-        //执行查询语句
-        int status = mysql_query(self.sock, [sql UTF8String]);
-        if (status == 0) {
-            success = YES;
-        }else{
-            const char *error = mysql_error(self.sock);
-            errMsg =[self decodeCString:error];
-            success = NO;
-        }
-        callback?callback(success, errMsg):nil;
+
     });
     
     
@@ -308,39 +327,32 @@
 -(void)delete:(NSString *)sql callback:(Success)callback{
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        //执行查询语句
-        int status = mysql_query(self.sock, [sql UTF8String]);
-        
-        BOOL success =NO;
-        NSString *errMsg;
-        if (status == 0) {
-            success = YES;
-        }else{
-            success = NO;
-            errMsg = @"删除数据失败";
-        }
-        callback?callback(success, errMsg):nil;
+        [self connetctMySQL:^(BOOL success) {
+            if (success) {
+                //执行查询语句
+                int status = mysql_query(self.sock, [sql UTF8String]);
+                
+                BOOL success =NO;
+                NSString *errMsg;
+                if (status == 0) {
+                    success = YES;
+                }else{
+                    success = NO;
+                    errMsg = @"删除数据失败";
+                }
+                callback?callback(success, errMsg):nil;
+            }else{
+                callback?callback(NO, SQL_CONNECT_ERROR):nil;
+            }
+        }];
+
         
     });
 
 
 }
 
-//查询sql
-- (MYSQL_RES *)query22:(NSString *)sql {
-    if (sql == nil) {
-        return nil;
-    }
 
-    //执行查询语句
-    int status = mysql_query(self.sock, [sql UTF8String]);
-
-    MYSQL_RES *result = nil;
-    if (status == 0) {
-        result = mysql_store_result(self.sock);
-    }
-    return result;
-}
 
 //查询sql-异步
 - (void)query:(NSString *)sql callback:(void(^)(MYSQL_RES *result, NSString *errorMsg))callback {
@@ -348,21 +360,31 @@
     if (sql == nil) {
         return ;
     }
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
-        //执行查询语句
-        int status = mysql_query(self.sock, [sql UTF8String]);
-        MYSQL_RES *result = nil;
-        NSString *error;
-        if (status == 0) {
-            result = mysql_store_result(self.sock);
-        }else{
-            error=@"查询数据失败";
-        }
-        callback?callback(result, error):nil;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        [self connetctMySQL:^(BOOL success) {
+            if (success) {
+                //执行查询语句
+                int status = mysql_query(self.sock, [sql UTF8String]);
+                MYSQL_RES *result = nil;
+                NSString *error;
+                if (status == 0) {
+                    result = mysql_store_result(self.sock);
+                }else{
+                    error=@"查询数据失败";
+                }
+                callback?callback(result, error):nil;
+            }else{
+                callback?callback(nil, SQL_CONNECT_ERROR):nil;
+            }
+            
+
+        }];
         
     });
-    
+
+
 }
 
 
@@ -428,7 +450,6 @@
                 model.userName = [self decodeCString:row[3]];
                 model.userPwd = [self decodeCString:row[4]];
                 model.schoolId = [self decodeCString:row[5]];
-                model.labelCode = [self decodeCString:row[6]];
                 [list addObject:model];
             }
         }
@@ -440,18 +461,28 @@
 //更新"table_users"表
 - (void )updateFromUserTable:(NSString *)sql callback:(Success)callback{
 
+    @weakify(self);
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        //执行查询语句
-        int status = mysql_query(self.sock, [sql UTF8String]);
-        BOOL ok = NO;
-        NSString *errMsg;
-        if (status == 0) {
-            ok = YES;
-        }else{
-            errMsg = @"更新数据失败";
-            ok = NO;
-        }
-        callback?callback(ok, errMsg):nil;
+        @strongify(self);
+        [self connetctMySQL:^(BOOL success) {
+            if (success) {
+                //执行查询语句
+                int status = mysql_query(self.sock, [sql UTF8String]);
+                BOOL ok = NO;
+                NSString *errMsg;
+                if (status == 0) {
+                    ok = YES;
+                }else{
+                    errMsg = @"更新数据失败";
+                    ok = NO;
+                }
+                callback?callback(ok, errMsg):nil;
+            }else{
+                callback?callback(NO, SQL_CONNECT_ERROR):nil;
+            }
+
+        }];
+
     });
 
 }

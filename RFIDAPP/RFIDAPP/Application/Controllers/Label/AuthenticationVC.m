@@ -2,16 +2,17 @@
 //  AuthenticationVC.m
 //  RFIDAPP
 //
-//  Created by fenglh on 2018/4/25.
+//  Created by lipeiyao on 2018/4/25.
 //  Copyright © 2018年 Apple Developer. All rights reserved.
 //
 
 #import "AuthenticationVC.h"
 #import "ScanVC.h"
-
+#import "AppDelegate.h"
 @interface AuthenticationVC ()
 @property (weak, nonatomic) IBOutlet UITextField *labelIdTextField; //标签输入框
 @property (weak, nonatomic) IBOutlet UIButton *authenticateBtn; //认证按钮
+@property (weak, nonatomic) IBOutlet UITextView *labelDescTextView;
 
 @end
 
@@ -68,6 +69,29 @@
 
 //认证按钮点击
 - (IBAction)authencateBtnOnClick:(id)sender {
+    [BMShowHUD show];
+    self.labelDescTextView.text = nil;//置空
+    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    if (delegate.currentUserName) {
+
+        
+        [[MySQLManager shareInstance] authLabel:self.labelIdTextField.text userName:delegate.currentUserName callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
+            if (errMsg) {
+                [BMShowHUD showError:errMsg];
+            }else{
+                if (list.count) {
+                    [BMShowHUD showSuccess:@"认证成功"];
+                    LabelModel *model = [list firstObject];//只取第一个
+                    self.labelDescTextView.text = model.LabelDesc;
+                }else{
+                    [BMShowHUD showMessage:@"认证失败"];
+                }
+            }
+        }];
+    }else{
+        [BMShowHUD showMessage:@"请先登录"];
+    }
+
 }
 
 //扫描按钮点击

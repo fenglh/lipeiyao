@@ -9,7 +9,7 @@
 #import "SetPasswordVC.h"
 
 
-#define MAX_COUNT_DOWN 6 //重获获取验证码时间间隔
+#define MAX_COUNT_DOWN 10 //重获获取验证码时间间隔
 
 static unsigned int  countDown ;
 

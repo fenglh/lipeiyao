@@ -2,7 +2,7 @@
 //  ForgetPwdMobileVC.h
 //  RFIDAPP
 //
-//  Created by fenglh on 2018/4/24.
+//  Created by lipeiyao on 2018/4/24.
 //  Copyright © 2018年 Apple Developer. All rights reserved.
 //
 
