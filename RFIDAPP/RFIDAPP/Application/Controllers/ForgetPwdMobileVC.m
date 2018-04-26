@@ -118,6 +118,7 @@
 
 - (IBAction)nextBtnOnClick:(id)sender {
     [BMShowHUD show];
+    [self.view endEditing:YES];
     //判断用户名存在
     @weakify(self);
     [[MySQLManager shareInstance] checkUserNameExist:self.userNameTextField.text callback:^(BOOL exist, NSString *errMsg) {
@@ -141,6 +142,7 @@
             }
             if (!exist) {
                 [BMShowHUD showMessage:@"手机号不正确"];
+                [self.mobileTextField becomeFirstResponder];
                 return ;
             }
             [[MySQLManager shareInstance] getVerificationCode:self.mobileTextField.text callback:^(NSString *code, NSString *errMsg) {

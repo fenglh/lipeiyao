@@ -75,7 +75,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+    [self.view endEditing:YES];
 }
 
 //允许侧滑删除

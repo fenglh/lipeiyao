@@ -89,6 +89,7 @@
 
 - (IBAction)addBtnOnClick:(id)sender {
     [BMShowHUD show];
+    [self.view endEditing:YES];
     //检查用户是否存在
     @weakify(self);
     [[MySQLManager shareInstance] checkUserNameExist:self.labelUserTextField.text callback:^(BOOL exist, NSString *errMsg) {
