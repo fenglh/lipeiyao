@@ -120,24 +120,27 @@
     [BMShowHUD show];
     //判断用户名存在
     @weakify(self);
-    [[MySQLManager shareInstance] checkUserNameExist:self.userNameTextField.text callback:^(BOOL success, NSString *errMsg) {
+    [[MySQLManager shareInstance] checkUserNameExist:self.userNameTextField.text callback:^(BOOL exist, NSString *errMsg) {
         @strongify(self);
-        if (!success) {
-            if (errMsg) {
-                [BMShowHUD showMessage:errMsg];
-            }else {
-                [BMShowHUD showMessage:@"用户不存在"];
-            }
+        
+        if (errMsg) {
+            [BMShowHUD showMessage:errMsg];
             return ;
         }
-        [[MySQLManager shareInstance] checkMobileExist:self.mobileTextField.text userName:self.userNameTextField.text callback:^(BOOL success, NSString *errMsg) {
+        if (!exist) {
+            [BMShowHUD showMessage:@"用户不存在"];
+            [self.userNameTextField becomeFirstResponder];
+            return ;
+        }
+
+        [[MySQLManager shareInstance] checkMobileExist:self.mobileTextField.text userName:self.userNameTextField.text callback:^(BOOL exist, NSString *errMsg) {
             @strongify(self);
-            if (!success) {
-                if (errMsg) {
-                    [BMShowHUD showMessage:errMsg];
-                }else {
-                    [BMShowHUD showMessage:@"手机号不正确"];
-                }
+            if (errMsg) {
+                [BMShowHUD showMessage:errMsg];
+                return ;
+            }
+            if (!exist) {
+                [BMShowHUD showMessage:@"手机号不正确"];
                 return ;
             }
             [[MySQLManager shareInstance] getVerificationCode:self.mobileTextField.text callback:^(NSString *code, NSString *errMsg) {

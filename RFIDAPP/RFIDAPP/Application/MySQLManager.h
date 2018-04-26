@@ -11,7 +11,7 @@
 typedef void(^Callback)(BOOL success);
 
 typedef void(^Success)(BOOL success, NSString *errMsg);
-
+typedef void(^Result)(BOOL exist, NSString *errMsg);
 
 //数据库管理类
 @interface MySQLManager : NSObject
@@ -38,26 +38,34 @@ typedef void(^Success)(BOOL success, NSString *errMsg);
     }
  */
 
+/*******************************登录相关***************************************/
 
 //检查登录
-- (void)checkLoginWithUserName:(NSString *)userName pwd:(NSString *)pwd callback:(Success)callback;
+- (void)loginWithUserName:(NSString *)userName pwd:(NSString *)pwd callback:(Success)callback;
 //检查用户名对应的手机号码是否存在
-- (void )checkMobileExist:(NSString *)mobile userName:(NSString *)userName callback:(Success)callback;
+- (void )checkMobileExist:(NSString *)mobile userName:(NSString *)userName callback:(Result)callback;
 //检查用户名是否存在
-- (void)checkUserNameExist:(NSString *)userName callback:(Success)callback;
+- (void)checkUserNameExist:(NSString *)userName callback:(Result)callback;
 //获取短信验证码
 - (void)getVerificationCode:(NSString *)mobile callback:(void(^)(NSString *code, NSString *errMsg))callback;
 //重置密码
 - (void)resetPassword:(NSString *)userName pwd:(NSString *)pwd callback:(Success)callback;
+
+/*******************************标签相关***************************************/
+
 //添加标签
 - (void)addLabel:(NSString *)labelId userName:(NSString *)userName desc:(NSString *)desc callback:(Success)callback;
 //检查标签是否已经存在
-- (void)checkLabelExist:(NSString *)labelId userName:(NSString *)userName callback:(Success)callback;
+- (void)checkLabelExist:(NSString *)labelId userName:(NSString *)userName callback:(Result)callback;
 //查询所有的标签
 - (void)getAllLabels:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback;
 //搜索标签
 - (void)searchLabel:(NSString *)searchContent callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback;
 //删除标签
 - (void)deleteLabel:(NSString *)labelId userName:(NSString *)userName callback:(Success)callback ;
+
+//认证标签
+- (void)authLabel:(NSString *)labelId userName:(NSString *)userName callback:(Success)callback ;
+
 
 @end

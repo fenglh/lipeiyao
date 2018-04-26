@@ -1,6 +1,0 @@
-framework module rc4 {
-  umbrella header "rc4.h"
-
-  export *
-  module * { export * }
-}

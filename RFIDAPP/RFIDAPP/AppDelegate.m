@@ -10,8 +10,7 @@
 #import "MySQLManager.h"
 #import "RealReachability.h"
 #import "TopToast.h"
-#import <rc4/rc4.h>
-
+#import "NSString+Extension.h"
 @interface AppDelegate ()
 
 @end
@@ -29,11 +28,17 @@
     [[MySQLManager shareInstance] connetctMySQL];
     
     //测试rc4加密
-    NSString *str = @"testStr";
+    NSString *str = @"88888888";
+    NSString *key =@"lipeiyao";
     
-    NSString *encodeStr = [rc4 encode:str andSecretKey:@"888888"];
+
     
+    NSString *encodeStr = [NSString encodeRC4:str key:key];
     NSLog(@"加密字符串: %@",encodeStr);
+    NSLog(@"加密字符串Base64: %@",[encodeStr base64EncodedString]);
+    
+    NSString *decodeStr = [NSString encodeRC4:encodeStr key:key];
+    NSLog(@"解密字符串: %@",decodeStr);
     return YES;
 }
 
@@ -65,5 +70,42 @@
     NSLog(@"%@", msg);
 }
 
+
+void swap(int* s1,int* s2){
+    int temp=*s1;
+    *s1=*s2;
+    *s2=temp;
+}
+
+-(NSString*) rc4Key:(NSString*) key str:(NSString*) str
+{
+    int j = 0;
+    unichar res[str.length];
+    const unichar* buffer = res;
+    unsigned char s[256];
+    for (int i = 0; i < 256; i++)
+    {
+        s[i] = i;
+    }
+    for (int i = 0; i < 256; i++)
+    {
+        j = (j + s[i] + [key characterAtIndex:(i % key.length)]) % 256;
+        
+        swap(s[i], s[j]);
+    }
+    
+    int i = j = 0;
+    
+    for (int y = 0; y < str.length; y++)
+    {
+        i = (i + 1) % 256;
+        j = (j + s[i]) % 256;
+        swap(s[i], s[j]);
+        
+        unsigned char f = [str characterAtIndex:y] ^ s[ (s[i] + s[j]) % 256];
+        res[y] = f;
+    }
+    return [NSString stringWithCharacters:buffer length:str.length];
+}
 
 @end

@@ -172,6 +172,7 @@
 		3640A0EE20909D9500C3032D /* RootNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3640A0ED20909D9500C3032D /* RootNavigationController.m */; };
 		3640A0F12090A03200C3032D /* AuthenticationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 3640A0F02090A03200C3032D /* AuthenticationVC.m */; };
 		3640A0F42090BC0E00C3032D /* LoginNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3640A0F32090BC0E00C3032D /* LoginNavigationController.m */; };
+		3640A0F7209168D600C3032D /* NSString+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3640A0F6209168D600C3032D /* NSString+Extension.m */; };
 		CA06727F208B0B9800AEAF56 /* bitstream.m in Sources */ = {isa = PBXBuildFile; fileRef = CA067270208B0B9800AEAF56 /* bitstream.m */; };
 		CA067280208B0B9800AEAF56 /* mask.m in Sources */ = {isa = PBXBuildFile; fileRef = CA067272208B0B9800AEAF56 /* mask.m */; };
 		CA067281208B0B9800AEAF56 /* QRCodeGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = CA067274208B0B9800AEAF56 /* QRCodeGenerator.m */; };
@@ -185,7 +186,6 @@
 		CA752BA32089FE9800638D31 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA752BA22089FE9800638D31 /* CoreMedia.framework */; };
 		CA752BA52089FEA700638D31 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA752BA42089FEA700638D31 /* AVFoundation.framework */; };
 		CA752BD6208A070E00638D31 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CA752BD5208A070E00638D31 /* libiconv.dylib */; };
-		DB47F5CA2090E94D0062D268 /* rc4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB47F5C92090E94D0062D268 /* rc4.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -593,6 +593,8 @@
 		3640A0F02090A03200C3032D /* AuthenticationVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AuthenticationVC.m; sourceTree = "<group>"; };
 		3640A0F22090BC0E00C3032D /* LoginNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginNavigationController.h; sourceTree = "<group>"; };
 		3640A0F32090BC0E00C3032D /* LoginNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginNavigationController.m; sourceTree = "<group>"; };
+		3640A0F5209168D600C3032D /* NSString+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+Extension.h"; sourceTree = "<group>"; };
+		3640A0F6209168D600C3032D /* NSString+Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+Extension.m"; sourceTree = "<group>"; };
 		CA06726F208B0B9800AEAF56 /* bitstream.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = bitstream.h; sourceTree = "<group>"; };
 		CA067270208B0B9800AEAF56 /* bitstream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bitstream.m; sourceTree = "<group>"; };
 		CA067271208B0B9800AEAF56 /* mask.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = mask.h; sourceTree = "<group>"; };
@@ -614,7 +616,6 @@
 		CA752BA22089FE9800638D31 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		CA752BA42089FEA700638D31 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		CA752BD5208A070E00638D31 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = ../../../../../usr/lib/libiconv.dylib; sourceTree = "<group>"; };
-		DB47F5C92090E94D0062D268 /* rc4.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = rc4.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -630,7 +631,6 @@
 				CA752BA12089FE8900638D31 /* CoreVideo.framework in Frameworks */,
 				CA752B9F2089FE6800638D31 /* QuartzCore.framework in Frameworks */,
 				18E0848D1CAEAD9A00D81434 /* CoreBluetooth.framework in Frameworks */,
-				DB47F5CA2090E94D0062D268 /* rc4.framework in Frameworks */,
 				18E0848B1CAEAD8E00D81434 /* ExternalAccessory.framework in Frameworks */,
 				18E084941CAEAF0700D81434 /* libsymbolbt-sdk.a in Frameworks */,
 			);
@@ -1109,6 +1109,8 @@
 			children = (
 				36409FAA208F1E0A00C3032D /* UIButton+Extension.h */,
 				36409FAB208F1E0A00C3032D /* UIButton+Extension.m */,
+				3640A0F5209168D600C3032D /* NSString+Extension.h */,
+				3640A0F6209168D600C3032D /* NSString+Extension.m */,
 			);
 			name = Category;
 			sourceTree = "<group>";
@@ -1330,7 +1332,6 @@
 		3640A055208F305900C3032D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				DB47F5C92090E94D0062D268 /* rc4.framework */,
 				3640A058208F30BD00C3032D /* libc++.tbd */,
 			);
 			name = Frameworks;
@@ -1706,6 +1707,7 @@
 				3640A0902090332900C3032D /* ReachState.m in Sources */,
 				CA067280208B0B9800AEAF56 /* mask.m in Sources */,
 				36409F9F208F1B2700C3032D /* IQKeyboardReturnKeyHandler.m in Sources */,
+				3640A0F7209168D600C3032D /* NSString+Extension.m in Sources */,
 				3640A0942090332900C3032D /* ReachStateWIFI.m in Sources */,
 				36409F65208F1A3A00C3032D /* UIColor+YYAdd.m in Sources */,
 				3640A0E22090787600C3032D /* LabelTableViewCell.m in Sources */,
@@ -1904,10 +1906,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.com.bluemoon.oa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "b98bb60a-1c6a-40b2-9c5c-08a394a5a4c1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "b98bb60a-1c6a-40b2-9c5c-08a394a5a4c1";
-				PROVISIONING_PROFILE_SPECIFIER = dev_cn.com.bluemoon.oa_90_170614;
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = dev_cn.com.bluemoon.oa_90_170614;
+				PROVISIONING_PROFILE = "d06315ab-d25e-476f-89e9-1d0cc63cdd82";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "d06315ab-d25e-476f-89e9-1d0cc63cdd82";
+				PROVISIONING_PROFILE_SPECIFIER = dev_cn.com.bluemoon.oa_20170109;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = dev_cn.com.bluemoon.oa_20170109;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/RFIDAPP/Frameworks/symbolbt-sdk/include/";
 			};
 			name = Debug;
@@ -1938,10 +1940,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.com.bluemoon.oa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "b98bb60a-1c6a-40b2-9c5c-08a394a5a4c1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "b98bb60a-1c6a-40b2-9c5c-08a394a5a4c1";
-				PROVISIONING_PROFILE_SPECIFIER = dev_cn.com.bluemoon.oa_90_170614;
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = dev_cn.com.bluemoon.oa_90_170614;
+				PROVISIONING_PROFILE = "d06315ab-d25e-476f-89e9-1d0cc63cdd82";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "d06315ab-d25e-476f-89e9-1d0cc63cdd82";
+				PROVISIONING_PROFILE_SPECIFIER = dev_cn.com.bluemoon.oa_20170109;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = dev_cn.com.bluemoon.oa_20170109;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/RFIDAPP/Frameworks/symbolbt-sdk/include/";
 			};
 			name = Release;

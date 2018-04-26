@@ -9,16 +9,16 @@
 #import "MySQLManager.h"
 #import "mysql.h"
 #import "UserModel.h"
-
+#import "NSString+Extension.h"
 #import "VerificationCodeModel.h"
-#define CONNECTION_HOST                 "rm-bp162p7vebc90r3q5co.mysql.rds.aliyuncs.com"
-#define CONNECTION_USER                 "root"
-#define CONNECTION_PASS                 "Hmily418"
-#define CONNECTION_DB                   "pydatabase"
-#define TABLE_USERS                     @"table_users"
-#define TABLE_VERIFICATION_CODE         @"table_verification_code"
-#define TABLE_LABELS                    @"table_labels"
-
+#define CONNECTION_HOST                 "rm-bp162p7vebc90r3q5co.mysql.rds.aliyuncs.com" //数据库主机名
+#define CONNECTION_USER                 "root"                      //数据路连接账号
+#define CONNECTION_PASS                 "Hmily418"                  //数据库连接密码
+#define CONNECTION_DB                   "pydatabase"                //数据库名
+#define TABLE_USERS                     @"table_users"              //表名
+#define TABLE_VERIFICATION_CODE         @"table_verification_code"  //表名
+#define TABLE_LABELS                    @"table_labels"             //表名
+#define RC4_SECRET_KEY                  @"lipeiyao"                 //rc4 秘钥
 
 
 @interface MySQLManager ()
@@ -45,7 +45,7 @@
 #pragma mark - 公有方法
 
 //忘记密码-匹配账号和手机号码
-- (void)checkUserNameExist:(NSString *)userName callback:(Success)callback {
+- (void)checkUserNameExist:(NSString *)userName callback:(Result)callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE user_name='%@';", TABLE_USERS, userName];
     
     [self queryFromUserTable:sql callback:^(NSArray<UserModel *> *list, NSString *errMsg) {
@@ -57,7 +57,7 @@
 
 }
 
-- (void )checkMobileExist:(NSString *)mobile userName:(NSString *)userName callback:(Success)callback {
+- (void )checkMobileExist:(NSString *)mobile userName:(NSString *)userName callback:(Result)callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE user_name='%@' and mobile='%@'", TABLE_USERS, userName, mobile];
     [self queryFromUserTable:sql callback:^(NSArray<UserModel *> *list, NSString *errMsg) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -69,7 +69,7 @@
 
 
 //登录
-- (void)checkLoginWithUserName:(NSString *)userName pwd:(NSString *)pwd callback:(Success)callback {
+- (void)loginWithUserName:(NSString *)userName pwd:(NSString *)pwd callback:(Success)callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE user_name='%@' and user_pwd='%@'", TABLE_USERS, userName, pwd];
     [self queryFromUserTable:sql callback:^(NSArray<UserModel *> *list, NSString *errMsg) {
         
@@ -114,8 +114,9 @@
 }
 
 //检查标签是否已经存在
-- (void)checkLabelExist:(NSString *)labelId userName:(NSString *)userName callback:(Success)callback {
-    NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user='%@' and label_code='%@'", TABLE_LABELS, userName, labelId];
+- (void)checkLabelExist:(NSString *)labelId userName:(NSString *)userName callback:(Result)callback {
+
+    NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user='%@' and label_code='%@'", TABLE_LABELS, userName, [self rc4Encode:labelId]]; //rc4 加密
     @weakify(self);
     [self query:sql callback:^(MYSQL_RES *result, NSString *errorMsg) {
         @strongify(self);
@@ -127,13 +128,13 @@
                 LabelModel *model = [[LabelModel alloc] init];
                 //如果表中新增字段，那么这里的索引顺序应当改变
                 model.labelUser = [self decodeCString:row[1]];
-                model.labelId = [self decodeCString:row[2]];
+                model.labelId = [self rc4Decode:[self decodeCString:row[2]]]; //rc4 解密
                 model.LabelDesc = [self decodeCString:row[3]];
                 [list addObject:model];
             }
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            callback?callback(!list.count, errorMsg):nil;//非0即真，当arr.cout != 0 时即为YES
+            callback?callback(list.count, errorMsg):nil;//非0即真，当arr.cout != 0 时即为YES
         });
         
     }];
@@ -153,7 +154,7 @@
     }
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
     [param setObject:userName forKey:@"label_user"];
-    [param setObject:labelId forKey:@"label_code"];
+    [param setObject:[self rc4Encode:labelId] forKey:@"label_code"]; //rc4 加密
     [param setObject:desc forKey:@"label_desc"];
     
     [self insert:param table:TABLE_LABELS callback:^(BOOL success, NSString *errMsg) {
@@ -174,7 +175,7 @@
 }
 
 - (void)searchLabel:(NSString *)searchContent callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback {
-    NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user like '%%%@%%' or label_code like'%%%@%%' ;", TABLE_LABELS,searchContent, searchContent];
+    NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user like '%%%@%%' or label_code like'%%%@%%' ;", TABLE_LABELS,searchContent, [self rc4Encode:searchContent]];//rc4 解密
     [self queryFromLabelsTable:sql callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
         dispatch_async(dispatch_get_main_queue(), ^{
             callback?callback(list, errMsg):nil;
@@ -183,7 +184,7 @@
 }
 
 - (void)deleteLabel:(NSString *)labelId userName:(NSString *)userName callback:(Success)callback {
-    NSString *sql = [NSString stringWithFormat:@"DELETE  from %@ WHERE label_user='%@' and label_code='%@' ;", TABLE_LABELS,userName, labelId];
+    NSString *sql = [NSString stringWithFormat:@"DELETE  from %@ WHERE label_user='%@' and label_code='%@' ;", TABLE_LABELS,userName, [self rc4Encode:labelId]];
     return [self delete:sql callback:^(BOOL success, NSString *errMsg) {
         dispatch_async(dispatch_get_main_queue(), ^{
             callback?callback(success, errMsg):nil;
@@ -192,6 +193,20 @@
 }
 
 #pragma mark - 私有方法
+
+//rc4 加密
+- (NSString *)rc4Encode:(NSString *)string {
+    //为方便：更直观的在数据库浏览加密内容，所以加密好再进行一次base64编码
+    return [[NSString encodeRC4:string key:RC4_SECRET_KEY] base64EncodedString];
+}
+
+//rc4 解密
+- (NSString *)rc4Decode:(NSString *)string {
+    //RC4加密解密使用相同的函数，将字符串传入后程序会自动识别。先进行base64解码，然后rc4解密
+    return [NSString encodeRC4:[NSString stringWithBase64EncodedString:string] key:RC4_SECRET_KEY];
+}
+
+//数据库中文读取解码
 - (NSString *)decodeCString:(const char *)charData {
     return [[NSString alloc] initWithCString:charData encoding:NSUTF8StringEncoding];
 }
@@ -387,7 +402,7 @@
                 LabelModel *model = [[LabelModel alloc] init];
                 //如果表中新增字段，那么这里的索引顺序应当改变
                 model.labelUser = [self decodeCString:row[1]];
-                model.labelId = [self decodeCString:row[2]];
+                model.labelId = [self rc4Decode:[self decodeCString:row[2]]]; //rc4 解密
                 model.LabelDesc = [self decodeCString:row[3]];
                 [list addObject:model];
             }
@@ -420,35 +435,6 @@
         callback?callback(list, errorMsg):nil;
     }];
 }
-
-
-//- (void)queryFromUserTable:(NSString *)sql callback:(void(^)(NSArray<UserModel *> * results))callback {
-//
-//    @weakify(self);
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        @strongify(self);
-//        MYSQL_RES *result = [self query:sql];
-//        NSMutableArray *list = [NSMutableArray array];
-//        if (result) {//有数据
-//            //遍历每一行记录
-//            MYSQL_ROW row;
-//            while ((row = mysql_fetch_row(result))) {
-//                UserModel *model = [[UserModel alloc] init];
-//                //如果表中新增字段，那么这里的索引顺序应当改变
-//                model.realName = [self decodeCString:row[1]];
-//                model.mobile = [self decodeCString:row[2]];
-//                model.userName = [self decodeCString:row[3]];
-//                model.userPwd = [self decodeCString:row[4]];
-//                model.schoolId = [self decodeCString:row[5]];
-//                model.labelCode = [self decodeCString:row[6]];
-//                [list addObject:model];
-//            }
-//        }
-//        callback?callback(list):nil;
-//    });
-//
-//
-//}
 
 
 //更新"table_users"表

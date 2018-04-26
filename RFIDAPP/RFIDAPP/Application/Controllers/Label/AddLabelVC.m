@@ -25,12 +25,28 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textFieldDidChange:) name:UITextFieldTextDidChangeNotification object:nil];
+    [self.addBtn activateBtn:[self checkEmpty]];
 }
 
 
 #pragma mark - 设置UI
 
 #pragma mark - 私有方法
+
+//检查输入
+- (BOOL)checkEmpty {
+    //检查账号和密码是否为空
+    if (self.labelIdTextField.text.length <= 0) {
+        return NO;
+    }
+    if (self.labelUserTextField.text.length <= 0) {
+        return NO;
+    }
+    if (self.labelDescTextField.text.length <= 0) {
+        return NO;
+    }
+    return YES;
+}
 
 #pragma mark - 公有方法
 
@@ -75,29 +91,30 @@
     [BMShowHUD show];
     //检查用户是否存在
     @weakify(self);
-    [[MySQLManager shareInstance] checkUserNameExist:self.labelUserTextField.text callback:^(BOOL success, NSString *errMsg) {
+    [[MySQLManager shareInstance] checkUserNameExist:self.labelUserTextField.text callback:^(BOOL exist, NSString *errMsg) {
         @strongify(self);
-        if (!success) {
-            if (errMsg) {
-                [BMShowHUD showMessage:errMsg];
-            }else {
-                [BMShowHUD showMessage:@"用户不存在"];
-                [self.labelUserTextField becomeFirstResponder];
-            }
+        if (errMsg) {
+            [BMShowHUD showMessage:errMsg];
+            return ;
+        }
+        if (!exist) {
+            [BMShowHUD showMessage:@"用户不存在"];
+            [self.labelUserTextField becomeFirstResponder];
             return ;
         }
         //检查标签+用户名 是否重复录入
-        [[MySQLManager shareInstance] checkLabelExist:self.labelIdTextField.text userName:self.labelUserTextField.text callback:^(BOOL success, NSString *errMsg) {
+        [[MySQLManager shareInstance] checkLabelExist:self.labelIdTextField.text userName:self.labelUserTextField.text callback:^(BOOL exist, NSString *errMsg) {
             @strongify(self);
-            if (!success) {
-                if (errMsg) {
-                    [BMShowHUD showMessage:errMsg];
-                }else {
+            if (errMsg) {
+                [BMShowHUD showMessage:errMsg];
+            }else {
+                if (exist) {
                     [BMShowHUD showMessage:@"该用户已经存在相同的标签!"];
                     [self.labelUserTextField becomeFirstResponder];
+                    return ;
                 }
-                return ;
             }
+ 
             //插入数据库
             [[MySQLManager shareInstance] addLabel:self.labelIdTextField.text userName:self.labelUserTextField.text desc:self.labelDescTextField.text callback:^(BOOL success, NSString *errMsg) {
                 if (success) {
