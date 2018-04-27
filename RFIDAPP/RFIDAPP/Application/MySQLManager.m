@@ -166,8 +166,18 @@
     }];
 }
 
-- (void)getAllLabels:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback{
-    NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ ", TABLE_LABELS];
+//- (void)getAllLabels:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback{
+//    NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ ", TABLE_LABELS];
+//    [self queryFromLabelsTable:sql callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
+//        
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            callback?callback(list, errMsg):nil;
+//        });
+//    }];
+//}
+
+- (void)getUserAllLabels:(NSString *)user callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback {
+    NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user='%@';", TABLE_LABELS, user];
     [self queryFromLabelsTable:sql callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -176,9 +186,8 @@
     }];
 }
 
-
-- (void)searchLabel:(NSString *)searchContent callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback {
-    [self getAllLabels:^(NSArray<LabelModel *> *list, NSString *errMsg) {
+- (void)searchUserLabel:(NSString *)searchContent user:(NSString *)user callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback {
+    [self getUserAllLabels:user callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
         NSMutableArray *searchResults = [NSMutableArray arrayWithCapacity:list.count];
         for (LabelModel *model in list) {
             if ([model.labelUser containsString:searchContent]) {
@@ -191,14 +200,30 @@
             callback?callback(searchResults, errMsg):nil;
         });
     }];
-//因为标签码加密了，所以无法模糊配配置
-//    NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user like '%%%@%%' or label_code like'%%%@%%' ;", TABLE_LABELS,searchContent, searchContent];//
-//    [self queryFromLabelsTable:sql callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
+}
+
+//- (void)searchLabel:(NSString *)searchContent callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback {
+//    [self getAllLabels:^(NSArray<LabelModel *> *list, NSString *errMsg) {
+//        NSMutableArray *searchResults = [NSMutableArray arrayWithCapacity:list.count];
+//        for (LabelModel *model in list) {
+//            if ([model.labelUser containsString:searchContent]) {
+//                [searchResults addObject:model];
+//            }else if ([model.labelId containsString:searchContent]){
+//                [searchResults addObject:model];
+//            }
+//        }
 //        dispatch_async(dispatch_get_main_queue(), ^{
-//            callback?callback(list, errMsg):nil;
+//            callback?callback(searchResults, errMsg):nil;
 //        });
 //    }];
-}
+////因为标签码加密了，所以无法模糊配配置
+////    NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user like '%%%@%%' or label_code like'%%%@%%' ;", TABLE_LABELS,searchContent, searchContent];//
+////    [self queryFromLabelsTable:sql callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
+////        dispatch_async(dispatch_get_main_queue(), ^{
+////            callback?callback(list, errMsg):nil;
+////        });
+////    }];
+//}
 
 - (void)deleteLabel:(NSString *)labelId userName:(NSString *)userName callback:(Success)callback {
     NSString *sql = [NSString stringWithFormat:@"DELETE  from %@ WHERE label_user='%@' and label_code='%@' ;", TABLE_LABELS,userName, [self rc4Encode:labelId]];

@@ -31,14 +31,19 @@
     [super viewWillAppear:animated];
     //每次界面出现都刷新数据
     @weakify(self);
-    [[MySQLManager shareInstance] getAllLabels:^(NSArray<LabelModel *> *list, NSString *errMsg) {
+    //清空当前登录的用户名
+
+
+    [[MySQLManager shareInstance] getUserAllLabels:[self currentLoginedUser] callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
         @strongify(self);
         self.list = [list mutableCopy];
         //在主线程刷新
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
         });
-    }] ;
+    }];
+    
+
 }
 
 #pragma mark - 设置UI
@@ -50,6 +55,11 @@
 
 
 #pragma mark - 私有方法
+
+- (NSString *)currentLoginedUser {
+    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    return delegate.currentUserName;
+}
 
 #pragma mark - 公有方法
 
@@ -155,7 +165,7 @@
 {
     NSString *inputStr = searchText;
     @weakify(self);
-    [[MySQLManager shareInstance] searchLabel:inputStr callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
+    [[MySQLManager shareInstance] searchUserLabel:inputStr user:[self currentLoginedUser] callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
         @strongify(self);
         [self.list removeAllObjects];
         self.list = [list mutableCopy];

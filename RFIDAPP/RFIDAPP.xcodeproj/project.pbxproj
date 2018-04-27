@@ -1862,7 +1862,7 @@
 				);
 				GCC_PREFIX_HEADER = "$(SRCROOT)/RFIDAPP/Application/Config/Prefix.pch";
 				INFOPLIST_FILE = RFIDAPP/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/RFIDAPP/Frameworks/symbolbt-sdk",
@@ -1896,7 +1896,7 @@
 				);
 				GCC_PREFIX_HEADER = "$(SRCROOT)/RFIDAPP/Application/Config/Prefix.pch";
 				INFOPLIST_FILE = RFIDAPP/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/RFIDAPP/Frameworks/symbolbt-sdk",
