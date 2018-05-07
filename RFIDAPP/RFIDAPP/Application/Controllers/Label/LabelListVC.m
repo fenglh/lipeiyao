@@ -86,7 +86,13 @@
     cell.borrowedNumbersLabel.text = [NSString stringWithFormat:@"%d",model.borrowedNumbers];
     cell.recommendedBooksLabel.text = model.recommendedBooks;
     cell.appointmentedBooksLabel.text = model.appointmentedBooks;
-    cell.statusLabel.text = model.status == 0?@"未激活":@"已激活";
+    if (model.status == 0) {
+        cell.statusLabel.text = @"未激活";
+        cell.statusLabel.textColor = [UIColor redColor];
+    }else{
+        cell.statusLabel.text = @"已激活";
+        cell.statusLabel.textColor = [UIColor colorWithHexString:@"3C8228"];
+    }
     return cell;
 }
 
