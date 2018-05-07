@@ -172,10 +172,15 @@
     NSString *inputStr = searchText;
     @weakify(self);
     [[MySQLManager shareInstance] searchUserLabel:inputStr user:[self currentLoginedUser] callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
-        @strongify(self);
-        [self.list removeAllObjects];
-        self.list = [list mutableCopy];
-        [self.tableView reloadData];
+        if (errMsg) {
+            [BMShowHUD showError:errMsg];
+        }else{
+            @strongify(self);
+            [self.list removeAllObjects];
+            self.list = [list mutableCopy];
+            [self.tableView reloadData];
+        }
+
     }] ;
     
 }

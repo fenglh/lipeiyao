@@ -227,13 +227,16 @@ appointmentedBooks:(NSString *)appointmentedBooks
 - (void)searchUserLabel:(NSString *)searchContent user:(NSString *)user callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback {
     [self getUserAllLabels:user callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
         NSMutableArray *searchResults = [NSMutableArray arrayWithCapacity:list.count];
-        for (LabelModel *model in list) {
-            if ([model.labelUser containsString:searchContent]) {
-                [searchResults addObject:model];
-            }else if ([model.labelId containsString:searchContent]){
-                [searchResults addObject:model];
+        if (searchContent.length == 0) {
+            [searchResults addObjectsFromArray:list];
+        }else{
+            for (LabelModel *model in list) {
+                if ([model.labelId containsString:searchContent]){
+                    [searchResults addObject:model];
+                }
             }
         }
+
         dispatch_async(dispatch_get_main_queue(), ^{
             callback?callback(searchResults, errMsg):nil;
         });
@@ -296,8 +299,14 @@ appointmentedBooks:(NSString *)appointmentedBooks
 
 //连接数据库-异步
 - (void)connetctMySQL:(Callback)callback {
+    
+    if (self.connected && callback) {
+        callback(YES);
+        return;
+    }
+    @weakify(self);
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-
+        @strongify(self);
         self.sock = mysql_init(NULL);
         //设置编码
         mysql_options(self.sock, MYSQL_SET_CHARSET_NAME, "utf8");
