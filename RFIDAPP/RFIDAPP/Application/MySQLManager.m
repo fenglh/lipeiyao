@@ -300,7 +300,7 @@ appointmentedBooks:(NSString *)appointmentedBooks
 //连接数据库-异步
 - (void)connetctMySQL:(Callback)callback {
     
-    if (self.connected && callback) {
+    if (self.sock  &&  self.connected && callback ) {
         callback(YES);
         return;
     }
@@ -430,20 +430,24 @@ appointmentedBooks:(NSString *)appointmentedBooks
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
         [self connetctMySQL:^(BOOL success) {
-            if (success) {
-                //执行查询语句
-                int status = mysql_query(self.sock, [sql UTF8String]);
-                MYSQL_RES *result = nil;
-                NSString *error;
-                if (status == 0) {
-                    result = mysql_store_result(self.sock);
+            @synchronized (self) {
+                
+                if (success) {
+                    //执行查询语句
+                    int status = mysql_query(self.sock, [sql UTF8String]);
+                    MYSQL_RES *result = nil;
+                    NSString *error;
+                    if (status == 0) {
+                        result = mysql_store_result(self.sock);
+                    }else{
+                        error=@"查询数据失败";
+                    }
+                    callback?callback(result, error):nil;
                 }else{
-                    error=@"查询数据失败";
+                    callback?callback(nil, SQL_CONNECT_ERROR):nil;
                 }
-                callback?callback(result, error):nil;
-            }else{
-                callback?callback(nil, SQL_CONNECT_ERROR):nil;
             }
+
             
 
         }];
