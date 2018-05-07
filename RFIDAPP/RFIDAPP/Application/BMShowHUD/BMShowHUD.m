@@ -3,7 +3,7 @@
 //  BMOnlineManagement
 //
 //  Created by lipeiyao on 2017/9/6.
-//  Copyright © 2017年 月亮小屋（中国）有限公司. All rights reserved.
+//  Copyright © 2017年 xxx. All rights reserved.
 //
 
 #import "BMShowHUD.h"

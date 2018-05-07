@@ -132,6 +132,11 @@
                 model.labelUser = [self decodeCString:row[1]];
                 model.labelId = [self rc4Decode:[self decodeCString:row[2]]]; //rc4 解密
                 model.LabelDesc = [self decodeCString:row[3]];
+                model.libraryName = [self decodeCString:row[4]];
+                model.borrowedNumbers = [[self decodeCString:row[5]] integerValue];
+                model.recommendedBooks = [self decodeCString:row[6]];
+                model.appointmentedBooks = [self decodeCString:row[7]];
+                model.status = [[self decodeCString:row[8]] integerValue];
                 [list addObject:model];
             }
         }
@@ -143,8 +148,40 @@
 
 }
 
-//添加标签
-- (void)addLabel:(NSString *)labelId userName:(NSString *)userName desc:(NSString *)desc callback:(Success)callback {
+////添加标签
+//- (void)addLabel:(NSString *)labelId userName:(NSString *)userName desc:(NSString *)desc callback:(Success)callback {
+//    if (userName == nil || labelId == nil) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            callback?callback(NO, @"用户名或标签码不能为空"):nil;
+//        });
+//        return ;
+//    }
+//    if (desc == nil) {
+//        desc = @"";
+//    }
+//    NSMutableDictionary *param = [NSMutableDictionary dictionary];
+//    [param setObject:userName forKey:@"label_user"];
+//    [param setObject:[self rc4Encode:labelId] forKey:@"label_code"]; //rc4 加密
+//    [param setObject:desc forKey:@"label_desc"];
+//
+//    [self insert:param table:TABLE_LABELS callback:^(BOOL success, NSString *errMsg) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            callback?callback(success, errMsg):nil;
+//        });
+//    }];
+//}
+
+
+- (void)addLabel:(NSString *)labelId
+        userName:(NSString *)userName
+            desc:(NSString *)desc
+     libraryName:(NSString *)libraryName
+ borrowedNumbers:(NSString *)borrowedNumbers
+recommendedBooks:(NSString *)recommendedBooks
+appointmentedBooks:(NSString *)appointmentedBooks
+          status:(BOOL)status
+        callback:(Success)callback {
+    
     if (userName == nil || labelId == nil) {
         dispatch_async(dispatch_get_main_queue(), ^{
             callback?callback(NO, @"用户名或标签码不能为空"):nil;
@@ -159,22 +196,23 @@
     [param setObject:[self rc4Encode:labelId] forKey:@"label_code"]; //rc4 加密
     [param setObject:desc forKey:@"label_desc"];
     
+    [param setObject:libraryName forKey:@"library_name"];
+    [param setObject:borrowedNumbers forKey:@"borrowed_numbers"];
+    [param setObject:recommendedBooks forKey:@"recommended_books"];
+    [param setObject:appointmentedBooks forKey:@"appointmented_books"];
+    [param setObject:@(status) forKey:@"status"];
+    
+    
+    
     [self insert:param table:TABLE_LABELS callback:^(BOOL success, NSString *errMsg) {
         dispatch_async(dispatch_get_main_queue(), ^{
             callback?callback(success, errMsg):nil;
         });
     }];
+    
 }
 
-//- (void)getAllLabels:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback{
-//    NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ ", TABLE_LABELS];
-//    [self queryFromLabelsTable:sql callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
-//        
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            callback?callback(list, errMsg):nil;
-//        });
-//    }];
-//}
+
 
 - (void)getUserAllLabels:(NSString *)user callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user='%@';", TABLE_LABELS, user];
@@ -202,28 +240,6 @@
     }];
 }
 
-//- (void)searchLabel:(NSString *)searchContent callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback {
-//    [self getAllLabels:^(NSArray<LabelModel *> *list, NSString *errMsg) {
-//        NSMutableArray *searchResults = [NSMutableArray arrayWithCapacity:list.count];
-//        for (LabelModel *model in list) {
-//            if ([model.labelUser containsString:searchContent]) {
-//                [searchResults addObject:model];
-//            }else if ([model.labelId containsString:searchContent]){
-//                [searchResults addObject:model];
-//            }
-//        }
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            callback?callback(searchResults, errMsg):nil;
-//        });
-//    }];
-////因为标签码加密了，所以无法模糊配配置
-////    NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user like '%%%@%%' or label_code like'%%%@%%' ;", TABLE_LABELS,searchContent, searchContent];//
-////    [self queryFromLabelsTable:sql callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
-////        dispatch_async(dispatch_get_main_queue(), ^{
-////            callback?callback(list, errMsg):nil;
-////        });
-////    }];
-//}
 
 - (void)deleteLabel:(NSString *)labelId userName:(NSString *)userName callback:(Success)callback {
     NSString *sql = [NSString stringWithFormat:@"DELETE  from %@ WHERE label_user='%@' and label_code='%@' ;", TABLE_LABELS,userName, [self rc4Encode:labelId]];
@@ -281,6 +297,7 @@
 //连接数据库-异步
 - (void)connetctMySQL:(Callback)callback {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+
         self.sock = mysql_init(NULL);
         //设置编码
         mysql_options(self.sock, MYSQL_SET_CHARSET_NAME, "utf8");
@@ -466,6 +483,12 @@
                 model.labelUser = [self decodeCString:row[1]];
                 model.labelId = [self rc4Decode:[self decodeCString:row[2]]]; //rc4 解密
                 model.LabelDesc = [self decodeCString:row[3]];
+                model.libraryName = [self decodeCString:row[4]];
+                model.borrowedNumbers = [[self decodeCString:row[5]] integerValue];
+                model.recommendedBooks = [self decodeCString:row[6]];
+                model.appointmentedBooks = [self decodeCString:row[7]];
+                model.status = [[self decodeCString:row[8]] integerValue];
+                
                 [list addObject:model];
             }
         }

@@ -67,7 +67,7 @@
 
 //cell 高度
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 80;
+    return 242;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -81,6 +81,12 @@
     cell.labelUser.text = model.labelUser;
     cell.labelId.text = model.labelId;
     cell.labelDesc.text = model.LabelDesc;
+    
+    cell.libraryNameLabel.text = model.libraryName;
+    cell.borrowedNumbersLabel.text = [NSString stringWithFormat:@"%d",model.borrowedNumbers];
+    cell.recommendedBooksLabel.text = model.recommendedBooks;
+    cell.appointmentedBooksLabel.text = model.appointmentedBooks;
+    cell.statusLabel.text = model.status == 0?@"未激活":@"已激活";
     return cell;
 }
 

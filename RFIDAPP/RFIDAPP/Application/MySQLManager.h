@@ -55,12 +55,21 @@ typedef void(^ResultList)(NSArray<LabelModel *> *list, NSString *errMsg);
 
 //添加标签
 - (void)addLabel:(NSString *)labelId userName:(NSString *)userName desc:(NSString *)desc callback:(Success)callback;
+
+//添加标签
+- (void)addLabel:(NSString *)labelId
+                userName:(NSString *)userName
+                    desc:(NSString *)desc
+             libraryName:(NSString *)libraryName
+         borrowedNumbers:(NSString *)borrowedNumbers
+        recommendedBooks:(NSString *)recommendedBooks
+      appointmentedBooks:(NSString *)appointmentedBooks
+                  status:(BOOL)status
+                callback:(Success)callback;
+
+
 //检查标签是否已经存在
 - (void)checkLabelExist:(NSString *)labelId userName:(NSString *)userName callback:(Result)callback;
-////查询所有的标签
-//- (void)getAllLabels:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback;
-//搜索所有标签
-//- (void)searchLabel:(NSString *)searchContent callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback;
 
 //查询指定用户的所有的标签
 - (void)getUserAllLabels:(NSString *)user callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback;

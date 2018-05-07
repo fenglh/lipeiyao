@@ -11,6 +11,7 @@
 #import "RealReachability.h"
 #import "TopToast.h"
 #import "NSString+Extension.h"
+
 @interface AppDelegate ()
 
 @end
@@ -25,7 +26,7 @@
     [GLobalRealReachability startNotifier];//网络监测
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(netWorkChange:) name:kRealReachabilityChangedNotification object:nil];
 
-    
+    [IQKeyboardManager sharedManager].enable = YES;
     //测试rc4加密
     NSString *str = @"88888888";
     NSString *key =@"lipeiyao";
