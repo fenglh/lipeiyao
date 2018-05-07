@@ -1202,13 +1202,12 @@
                                     <action selector="setPasswordAction:" destination="2Oc-dR-G9t" eventType="touchUpInside" id="jnH-Ge-Dj4"/>
                                 </connections>
                             </button>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="xNS-Zf-aQw">
-                                <rect key="frame" x="12" y="289" width="351" height="120"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xNS-Zf-aQw">
+                                <rect key="frame" x="12" y="289" width="351" height="180"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="120" id="Ds9-4w-Jyl"/>
+                                    <constraint firstAttribute="height" constant="180" id="Ds9-4w-Jyl"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="标签描述：" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yN9-2k-tgq">

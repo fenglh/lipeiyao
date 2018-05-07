@@ -83,7 +83,10 @@
                 if (list.count) {
                     [BMShowHUD showSuccess:@"认证成功"];
                     LabelModel *model = [list firstObject];//只取第一个
-                    self.labelDescTextView.text = model.LabelDesc;
+                    NSString *text = [NSString stringWithFormat:@"标签所有者：%@\n标签的描述：%@\n图书馆名称：%@\n已借阅数量：%@\n推荐的书籍：%@\n预约的书籍：%@\n标签的状态：%@\n\
+                                      ",model.labelUser,model.LabelDesc,model.libraryName,@(model.borrowedNumbers),model.recommendedBooks,model.appointmentedBooks,model.borrowedNumbers==0?@"未激活":@"已激活"];
+                    
+                    self.labelDescTextView.text = text;
                 }else{
                     [BMShowHUD showMessage:@"认证失败"];
                 }
