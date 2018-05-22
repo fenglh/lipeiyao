@@ -169,6 +169,9 @@
 		3640A0F42090BC0E00C3032D /* LoginNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3640A0F32090BC0E00C3032D /* LoginNavigationController.m */; };
 		3640A0F7209168D600C3032D /* NSString+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3640A0F6209168D600C3032D /* NSString+Extension.m */; };
 		3640A0F92091B63300C3032D /* 李沛瑶.md in Resources */ = {isa = PBXBuildFile; fileRef = 3640A0F82091B63300C3032D /* 李沛瑶.md */; };
+		365C1AD920B3A30800CF7DFA /* RegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 365C1AD820B3A30800CF7DFA /* RegisterViewController.m */; };
+		365C1ADB20B3A7A500CF7DFA /* realname.png in Resources */ = {isa = PBXBuildFile; fileRef = 365C1ADA20B3A7A400CF7DFA /* realname.png */; };
+		365C1ADD20B3A7CA00CF7DFA /* schoolid.png in Resources */ = {isa = PBXBuildFile; fileRef = 365C1ADC20B3A7C900CF7DFA /* schoolid.png */; };
 		CA06727F208B0B9800AEAF56 /* bitstream.m in Sources */ = {isa = PBXBuildFile; fileRef = CA067270208B0B9800AEAF56 /* bitstream.m */; };
 		CA067280208B0B9800AEAF56 /* mask.m in Sources */ = {isa = PBXBuildFile; fileRef = CA067272208B0B9800AEAF56 /* mask.m */; };
 		CA067281208B0B9800AEAF56 /* QRCodeGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = CA067274208B0B9800AEAF56 /* QRCodeGenerator.m */; };
@@ -582,6 +585,10 @@
 		3640A0F5209168D600C3032D /* NSString+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+Extension.h"; sourceTree = "<group>"; };
 		3640A0F6209168D600C3032D /* NSString+Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+Extension.m"; sourceTree = "<group>"; };
 		3640A0F82091B63300C3032D /* 李沛瑶.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "李沛瑶.md"; sourceTree = "<group>"; };
+		365C1AD720B3A30800CF7DFA /* RegisterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RegisterViewController.h; sourceTree = "<group>"; };
+		365C1AD820B3A30800CF7DFA /* RegisterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RegisterViewController.m; sourceTree = "<group>"; };
+		365C1ADA20B3A7A400CF7DFA /* realname.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = realname.png; sourceTree = "<group>"; };
+		365C1ADC20B3A7C900CF7DFA /* schoolid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = schoolid.png; sourceTree = "<group>"; };
 		CA06726F208B0B9800AEAF56 /* bitstream.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = bitstream.h; sourceTree = "<group>"; };
 		CA067270208B0B9800AEAF56 /* bitstream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bitstream.m; sourceTree = "<group>"; };
 		CA067271208B0B9800AEAF56 /* mask.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = mask.h; sourceTree = "<group>"; };
@@ -730,6 +737,7 @@
 		18D8E9001CB64EF800FDB06F /* icons */ = {
 			isa = PBXGroup;
 			children = (
+				365C1ADC20B3A7C900CF7DFA /* schoolid.png */,
 				3640A0E720909C5800C3032D /* icon_list@3x.png */,
 				3640A0E820909C5900C3032D /* icon_verify@3x.png */,
 				3640A0E52090811500C3032D /* icon_label_id@3x.png */,
@@ -739,6 +747,7 @@
 				3640A05F208F66D300C3032D /* icon_user.png */,
 				36409EFF208F0F5400C3032D /* icon_pwd_ok_2.png */,
 				36409EFD208F0F1700C3032D /* icon_pwd_ok.png */,
+				365C1ADA20B3A7A400CF7DFA /* realname.png */,
 				36409EFB208F0ED900C3032D /* icon_pwd.png */,
 				36409EF9208F0EA800C3032D /* icon_verify_code.png */,
 				36409EF7208F05DB00C3032D /* icon_mobile.png */,
@@ -1395,6 +1404,8 @@
 				1818531E1CAF6DFE00145B5A /* SetPasswordVC.m */,
 				36409EF4208F047400C3032D /* ForgetPwdMobileVC.h */,
 				36409EF5208F047400C3032D /* ForgetPwdMobileVC.m */,
+				365C1AD720B3A30800CF7DFA /* RegisterViewController.h */,
+				365C1AD820B3A30800CF7DFA /* RegisterViewController.m */,
 			);
 			name = Login;
 			sourceTree = "<group>";
@@ -1620,6 +1631,8 @@
 				3640A050208F2E3E00C3032D /* success2@2x.png in Resources */,
 				18E084801CAEAA3900D81434 /* Assets.xcassets in Resources */,
 				18D8E9231CB64EF800FDB06F /* img_audit_background@2x.png in Resources */,
+				365C1ADD20B3A7CA00CF7DFA /* schoolid.png in Resources */,
+				365C1ADB20B3A7A500CF7DFA /* realname.png in Resources */,
 				18D8E9171CB64EF800FDB06F /* ic_field_comission@2x.png in Resources */,
 				3640A0D720905CF600C3032D /* qrcode_scan_part_net.png in Resources */,
 				18E0847E1CAEAA3900D81434 /* Main.storyboard in Resources */,
@@ -1662,6 +1675,7 @@
 				3640A0972090332900C3032D /* PingHelper.m in Sources */,
 				3640A0632090170600C3032D /* VerificationCodeModel.m in Sources */,
 				36409F9C208F1B2700C3032D /* IQUIViewController+Additions.m in Sources */,
+				365C1AD920B3A30800CF7DFA /* RegisterViewController.m in Sources */,
 				3640A0F12090A03200C3032D /* AuthenticationVC.m in Sources */,
 				36409F61208F1A3A00C3032D /* YYCGUtilities.m in Sources */,
 				36409F67208F1A3A00C3032D /* UIDevice+YYAdd.m in Sources */,
