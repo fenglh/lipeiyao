@@ -81,11 +81,12 @@
 - (void)textFieldDidChange:(NSNotification *)notification {
     UITextField *textField = notification.object;
     NSString *toBeString = textField.text;
-    if (MobileMaxCount >0 && toBeString.length > MobileMaxCount) {
-        textField.text = [toBeString substringToIndex:MobileMaxCount];
-    }
+
     BOOL ok = NO;
     if (textField == self.mobileTextField) {
+        if (MobileMaxCount >0 && toBeString.length > MobileMaxCount) {
+            textField.text = [toBeString substringToIndex:MobileMaxCount];
+        }
         ok = toBeString.length && self.userNameTextField.text.length ;//非0即为真
     } else if (textField == self.userNameTextField){
         ok = toBeString.length && self.mobileTextField.text.length ;//非0即为真
@@ -117,7 +118,7 @@
 
 
 - (IBAction)nextBtnOnClick:(id)sender {
-    [BMShowHUD show];
+    [BMShowHUD showToView:self.view];
     [self.view endEditing:YES];
     //判断用户名存在
     @weakify(self);

@@ -85,7 +85,7 @@ static unsigned int  countDown ;
 
 //提交重置密码
 - (void)submitSetPassword {
-    [BMShowHUD show];//loading
+    [BMShowHUD showToView:self.view];
     [self.view endEditing:YES];
     //这里直接校验验证码是否正确，如果正确那么调用MySQLManager来修改远程数据库的密码。
     //(正常逻辑应该调用服务端接口，让服务端来操作）

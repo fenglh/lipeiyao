@@ -87,7 +87,7 @@
 #pragma mark - 事件响应
 - (IBAction)userLogin:(id)sender {
     
-    [BMShowHUD show];
+    [BMShowHUD showToView:self.view];
     [self.view endEditing:YES];
     @weakify(self);;
     [[MySQLManager shareInstance] loginWithUserName:self.usernameTextField.text pwd:self.passwordTextField.text callback:^(BOOL success, NSString *errMsg) {

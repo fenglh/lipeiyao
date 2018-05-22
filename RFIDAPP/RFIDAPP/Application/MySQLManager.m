@@ -172,6 +172,35 @@
 //}
 
 
+- (void)addUser:(NSString *)realName
+       schoolId:(NSString *)schoolId
+         mobile:(NSString *)mobile
+       userName:(NSString *)userName
+            pwd:(NSString *)pwd
+       callback:(Success)callback {
+    if (realName == nil || schoolId == nil || mobile == nil || userName == nil || pwd == nil) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            callback?callback(NO, @"参数不能为空"):nil;
+        });
+        return ;
+    }
+    
+    NSMutableDictionary *param = [NSMutableDictionary dictionary];
+    [param setObject:realName forKey:@"real_name"];
+    [param setObject:mobile forKey:@"mobile"];
+    [param setObject:userName forKey:@"user_name"];
+    [param setObject:pwd forKey:@"user_pwd"];
+    [param setObject:schoolId forKey:@"user_school_id"];
+    
+    [self insert:param table:TABLE_USERS callback:^(BOOL success, NSString *errMsg) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            callback?callback(success, errMsg):nil;
+        });
+    }];
+    
+}
+
+
 - (void)addLabel:(NSString *)labelId
         userName:(NSString *)userName
             desc:(NSString *)desc

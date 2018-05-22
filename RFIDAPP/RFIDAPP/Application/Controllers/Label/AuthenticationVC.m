@@ -69,7 +69,7 @@
 
 //认证按钮点击
 - (IBAction)authencateBtnOnClick:(id)sender {
-    [BMShowHUD show];
+    [BMShowHUD showToView:self.view];
     [self.view endEditing:YES];
     self.labelDescTextView.text = nil;//置空
     AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;

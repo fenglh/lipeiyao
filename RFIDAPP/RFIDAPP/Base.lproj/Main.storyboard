@@ -512,7 +512,7 @@
         <!--注册-->
         <scene sceneID="A9r-qb-fG5">
             <objects>
-                <viewController id="Lcb-yC-sS2" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="Lcb-yC-sS2" customClass="RegisterViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="sHW-VI-PGb"/>
                         <viewControllerLayoutGuide type="bottom" id="8RY-kQ-48V"/>
@@ -538,7 +538,7 @@
                                                 <rect key="frame" x="48" y="21" width="315" height="19"/>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
+                                                <textInputTraits key="textInputTraits"/>
                                             </textField>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kkF-Hh-0R0">
                                                 <rect key="frame" x="12" y="50.5" width="351" height="1"/>
@@ -574,7 +574,7 @@
                                                 <rect key="frame" x="48" y="21" width="315" height="19"/>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
+                                                <textInputTraits key="textInputTraits"/>
                                             </textField>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VrB-YD-q5Q">
                                                 <rect key="frame" x="12" y="50.5" width="351" height="1"/>
@@ -610,7 +610,7 @@
                                                 <rect key="frame" x="48" y="21" width="315" height="19"/>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
+                                                <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                             </textField>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1x9-aG-nS0">
                                                 <rect key="frame" x="12" y="50.5" width="351" height="1"/>
@@ -646,7 +646,7 @@
                                                 <rect key="frame" x="48" y="21" width="315" height="19"/>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
+                                                <textInputTraits key="textInputTraits"/>
                                             </textField>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="apA-Gy-Dqh">
                                                 <rect key="frame" x="12" y="50.5" width="351" height="1"/>
@@ -746,11 +746,12 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="5tl-DH-2Td"/>
                                         </constraints>
-                                        <state key="normal" title="下一步">
+                                        <state key="normal" title="注册">
                                             <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
                                         <connections>
                                             <action selector="nextBtnOnClick:" destination="6vy-5j-2Dm" eventType="touchUpInside" id="Imy-eE-PiT"/>
+                                            <action selector="registerBtnOnClick:" destination="Lcb-yC-sS2" eventType="touchUpInside" id="yS6-JF-ce6"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -791,6 +792,15 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="注册" id="VMK-hg-dfA"/>
+                    <connections>
+                        <outlet property="confirmPwdTextField" destination="wOI-gy-cLm" id="vQD-md-GKr"/>
+                        <outlet property="mobileTextField" destination="0Wc-ZC-uyI" id="kux-uy-Kme"/>
+                        <outlet property="okBtn" destination="LI1-79-bQo" id="wQc-O6-Gmx"/>
+                        <outlet property="pwdTextField" destination="flh-y0-Wns" id="wBS-Rx-YKZ"/>
+                        <outlet property="realNameTextField" destination="7MC-xP-Mth" id="UBI-t8-MAs"/>
+                        <outlet property="schoolIdTextField" destination="9Ay-Tr-gWl" id="di7-4V-48J"/>
+                        <outlet property="userNameTextField" destination="XxT-F0-584" id="yus-4z-ldl"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dvh-gW-gvk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

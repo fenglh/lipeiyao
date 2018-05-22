@@ -125,7 +125,7 @@
 
 
 - (IBAction)addBtnOnClick:(id)sender {
-    [BMShowHUD show];
+    [BMShowHUD showToView:self.view];
     [self.view endEditing:YES];
     //检查用户是否存在
     @weakify(self);

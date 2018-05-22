@@ -67,6 +67,13 @@ typedef void(^ResultList)(NSArray<LabelModel *> *list, NSString *errMsg);
                   status:(BOOL)status
                 callback:(Success)callback;
 
+//添加用户
+- (void)addUser:(NSString *)realName
+       schoolId:(NSString *)schoolId
+         mobile:(NSString *)mobile
+       userName:(NSString *)userName
+            pwd:(NSString *)pwd
+       callback:(Success)callback;
 
 //检查标签是否已经存在
 - (void)checkLabelExist:(NSString *)labelId userName:(NSString *)userName callback:(Result)callback;
