@@ -33,8 +33,8 @@
     @weakify(self);
     //清空当前登录的用户名
 
-
-    [[MySQLManager shareInstance] getUserAllLabels:[self currentLoginedUser] callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
+    [[MySQLManager shareInstance] getUserAllLabels:^(NSArray<LabelModel *> *list, NSString *errMsg) {
+//    [[MySQLManager shareInstance] getUserAllLabels:[self currentLoginedUser] callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
         @strongify(self);
         self.list = [list mutableCopy];
         //在主线程刷新

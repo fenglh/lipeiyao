@@ -78,8 +78,12 @@ typedef void(^ResultList)(NSArray<LabelModel *> *list, NSString *errMsg);
 //检查标签是否已经存在
 - (void)checkLabelExist:(NSString *)labelId userName:(NSString *)userName callback:(Result)callback;
 
+
+//获取所有用户标签
+- (void)getUserAllLabels:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback;
+
 //查询指定用户的所有的标签
-- (void)getUserAllLabels:(NSString *)user callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback;
+//- (void)getUserAllLabels:(NSString *)user callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback;
 //搜索指定用户标签
 - (void)searchUserLabel:(NSString *)searchContent user:(NSString *)user callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback;
 

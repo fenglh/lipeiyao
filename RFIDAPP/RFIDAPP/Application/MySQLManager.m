@@ -243,6 +243,16 @@ appointmentedBooks:(NSString *)appointmentedBooks
 
 
 
+- (void)getUserAllLabels:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback {
+    NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ ;", TABLE_LABELS];
+    [self queryFromLabelsTable:sql callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            callback?callback(list, errMsg):nil;
+        });
+    }];
+}
+
 - (void)getUserAllLabels:(NSString *)user callback:(void(^)(NSArray <LabelModel *> *list, NSString *errMsg))callback {
     NSString *sql = [NSString stringWithFormat:@"SELECT * from %@ WHERE label_user='%@';", TABLE_LABELS, user];
     [self queryFromLabelsTable:sql callback:^(NSArray<LabelModel *> *list, NSString *errMsg) {
